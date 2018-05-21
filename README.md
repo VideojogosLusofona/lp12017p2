@@ -17,15 +17,33 @@ Deve ser usada a linguagem C# e os grupos podem ter entre 2 a 3 elementos.
 
 ### O jogo
 
-_Em breve_
+Os alunos devem implementar um jogo _roguelike_ com níveis
+[gerados procedimentalmente][GP] em grelhas 8x8. O jogador começa no lado
+esquerdo da grelha (1ª coluna), e o seu objetivo é encontrar a saída do nível,
+que se encontra do lado direito dessa mesma grelha (8ª coluna). Pelo meio o
+jogador pode encontrar NPCs (monstros, comerciantes) e encontrar itens
+(_power-ups_, _gold_, armas, escudos/armaduras, mapas), possivelmente
+apanhando-os. Podem eventualmente existir armadilhas ou segredos que podem
+revelar-se armadilhas ou itens úteis.
 
-### Modo de funcionamento
+Os níveis vão ficando progressivamente mais difíceis, com mais monstros, menos
+itens e mais armadilhas. O _score_ final do jogador é igual ao nível atingido,
+existindo uma tabela dos top 20 _high scores_, que deve persistir quando o
+programa termina e o PC é desligado.
 
-_Em breve_
+No início de cada nível, o jogador só tem conhecimento da sua vizinhança (de
+[Moore]). À medida que o jogador se desloca, o mapa vai-se revelando. O jogador
+só pode deslocar-se na sua vizinhança de [Von Neumann] usando as teclas WASD
+(não usar _keypad_, pois o mesmo não existe em alguns portáteis, dificultando a
+avaliação do jogo).
 
 <a name="visualize"></a>
 
 ### Visualização do jogo
+
+_Em breve_
+
+### Modo de funcionamento
 
 _Em breve_
 
@@ -182,3 +200,6 @@ Este enunciado é disponibilizados através da licença [CC BY-NC-SA 4.0].
 [Sandcastle]:https://github.com/EWSoftware/SHFB
 [SRP]:https://en.wikipedia.org/wiki/Single_responsibility_principle
 [KISS]:https://en.wikipedia.org/wiki/KISS_principle
+[GP]:https://en.wikipedia.org/wiki/Procedural_generation
+[Moore]:https://en.wikipedia.org/wiki/Moore_neighborhood
+[Von Neumann]:https://en.wikipedia.org/wiki/Von_Neumann_neighborhood
