@@ -58,6 +58,7 @@ As ações disponíveis em cada _turn_ são as seguintes:
       se o mesmo suportar o seu peso (senão é largada no local).
     * No caso de comida, a mesma é consumida, aumentando o HP na proporção
       especificada para a comida em questão, até um máximo de 100.
+    * Não é possível usar ouro diretamente (serve apenas para trocas com NPCs).
   * `D`, seguido do número do item, para largar o item no _tile atual_.
     * No caso de existirem itens iguais acumulados, solicitar ao utilizador a
       quantidade a largar no local.
@@ -70,10 +71,10 @@ Em cada _turn_ é consumido automaticamente 1 HP do jogador.
 
 O jogador tem várias características:
 
-* **HP** (_hit points_) - Vida do jogador, entre 0 e 100; quando chega a zero o
+* `HP` (_hit points_) - Vida do jogador, entre 0 e 100; quando chega a zero o
   jogador morre.
-* **Arma equipada** - A arma que o jogador usa em combate.
-* **Inventário** - Itens que o jogador transporta (até um máximo de peso
+* `SelectedWeapon` - A arma que o jogador usa em combate.
+* `Inventory` - Itens que o jogador transporta (até um máximo de peso
   pré-definido), nomeadamente comida, armas (que não a arma equipada) e ouro.
   Itens exatamente iguais devem ser agrupados, por exemplo 10 _gold_, 3 _apple_,
   1 _dagger_ ou 2 _sword_.
@@ -82,25 +83,60 @@ O jogador tem várias características:
 
 Os NPCs têm as seguintes características:
 
-* **HP** (_hit points_) - Vida do NPC, semelhante à do jogador; inicialmente os
+* `HP` (_hit points_) - Vida do NPC, semelhante à do jogador; inicialmente os
   NPCs devem ter HPs relativamente pequenos, mas à medida que o jogo progride,
   o HP dos NPCs deve ir aumentando. O HP inicial dos NPCs é aleatório.
-* **Poder de ataque** - O máximo de HP que o NPC pode retirar ao jogador caso o
-  ataque.
-* **State** - Estado do NPC, um de dois estados possíveis:
+* `AttackPower` - O máximo de HP que o NPC pode retirar ao jogador em
+  cada ataque.
+* `State` - Estado do NPC, um de dois estados possíveis:
   * _Hostile_ - Ataca o jogador assim que o jogador se move para o respetivo
     _tile_.
   * _Neutral_ - NPC ignora o jogador quando o jogador se move para o respetivo
     _tile_.
 
-O jogador pode atacar qualquer NPC, e a partir desse momento o estado do NPC
-passa a ser _Hostile_, independentemente do seu estado inicial. O jogador
+O jogador pode atacar qualquer NPC presente na _tile_ atual, e a partir desse
+momento o estado desse NPC passa a ser _Hostile_, independentemente do seu
+estado anterior.
 
-##### Combate
+#### Itens
 
-_A fazer_
+Todos os itens podem ser colocados no inventário do jogador e têm as seguintes
+características:
 
-##### Compra/venda de itens
+* `Weight` - Peso do item.
+* `Value` - Valor do item.
+
+Existem os seguintes itens em concreto:
+
+* Comida - Podem existir diferentes tipos de comida, à escolha dos alunos. Cada
+tipo diferente de comida fornece ao jogador um HP pré-definido (`HPIncrease`)
+quando usado.
+* Armas - Podem existir diferentes tipos de armas, à escolha dos alunos. Cada
+tipo diferente de arma tem um `AttackPower` e `Durability` específicos. O
+primeiro, inteiro entre 1 e 100, representa o máximo de HP que o jogador pode
+retirar ao NPC quando o ataca. A `Durability`, _float_ entre 0 e 1, representa
+a probabilidade da arma não se estragar quando usada num ataque. As arma são
+retiradas do jogo no momento em que se estragam.
+* Ouro - Pode ser usado como moeda em negociações com NPCs. Cada item de ouro
+tem o valor 1.
+
+#### Mapas
+
+Existe um mapa por nível, colocado aleatoriamente num _tile_. Caso o jogador
+apanhe o mapa, todas as partes inexploradas do nível são reveladas.
+
+#### Combate
+
+Um NPC `Hostile` ataca o jogador quando este entra ou se mantém no _tile_ onde
+o NPC está presente. A quantidade de HP que o jogador perde é igual a um valor
+aleatório entre 0 e o `AttackPower` do NPC.
+
+O jogador pode atacar qualquer NPC presente no mesmo _tile_ selecionando a
+opção `F`. A quantidade de HP que o jogador retira ao NPC é igual a um valor
+aleatório entre 0 e o `AttackPower` da arma equipada. O jogador não pode atacar
+NPCs senão tiver uma arma equipada.
+
+#### Compra/venda de itens
 
 _A fazer_
 
@@ -223,6 +259,9 @@ definida][SRP].
 
 ### Fases da implementação
 
+O jogo pode ser implementado incrementalmente em várias fases. Os projetos
+precisam de implementar pelo menos a Fase 1 para serem avaliados.
+
 #### Fase 1
 
 Na fase 1 devem ser implementandos os seguintes pontos:
@@ -283,10 +322,9 @@ A implementação completa desta fase equivale a 70% de cumprimento do
 Na fase 5 devem ser implementandos os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-* Jogador têm inventário que permite guardar itens até um determinado peso,
-  implementação da funcionalidade ``.
+* Jogador tem inventário que permite guardar itens até um peso máximo
+  pré-determinado; implementação da funcionalidade `(I) Inventory`.
 * Implementação da funcionalidade `(E) Pick up item`.
-* Implementação da funcionalidade `(I) Inventory`.
 * Itens:
   * Comida, armas e ouro: quando apanhados são guardados no inventário do
     jogador, caso o mesmo ainda suporte o peso.
@@ -345,7 +383,7 @@ A implementação completa desta fase equivale a 95% de cumprimento do
 Na fase 10 devem ser implementandos os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-_a fazer_
+* _a fazer_
 
 A implementação completa desta fase equivale a 100% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 5).
@@ -369,7 +407,7 @@ máxima de 5 valores.
 Este projeto tem os seguintes objetivos:
 
 * **O1** - Jogo deve funcionar como especificado (ver [fases](#fases) de
-  implementação).
+  implementação, obrigatório implementar pelo menos a Fase 1).
 * **O2** - Projeto e código bem organizados, nomeadamente: a) estrutura de
   classes bem pensada (ver secção <a href="#orgclasses">Organização do projeto
   e estrutura de classes</a>); b) código devidamente comentado e indentado; c)
@@ -396,9 +434,11 @@ Este projeto tem os seguintes objetivos:
   * Informação de quem fez o quê no projeto. Esta informação é **obrigatória**
     e deve refletir os _commits_ feitos no Git.
   * Descrição da solução:
+    * Fase implementada (1 a 10, ou extra).
     * Arquitetura da solução, com breve explicação de como o programa foi
-      organizado e indicação das estruturas de dados (para _a fazer_) e
-      algoritmos (para _a fazer_, por exemplo) utilizados.
+      organizado e indicação das estruturas de dados usadas (para o inventário
+      e para a grelha de jogo, por exemplo), bem como os algoritmos
+      implementados (para desenhar o mapa, por exemplo).
     * Um diagrama UML descrevendo a estrutura de classes.
     * Um fluxograma mostrando o _game loop_.
   * Conclusões e matéria aprendida.
@@ -435,9 +475,8 @@ Deve ser submetido um ficheiro `zip` com os seguintes conteúdos:
 
 Notas adicionais para entrega:
 
-* A solução deve ser desenvolvida no Visual Studio 2017, Visual Studio Code,
-  Visual Studio Mac ou MonoDevelop.
-* O projeto deve ser do tipo Console App (preferencialmente .NET Framework).
+* A solução deve ser entregue na forma de uma solução para Visual Studio 2017.
+* O projeto deve ser do tipo Console App (.NET Framework ou .NET Core).
 * Todos os ficheiros do projeto devem ser gravados em codificação [UTF-8]. Este
   pormenor é especialmente importante em Windows pois regra geral a codificação
   [UTF-8] não é usada por omissão. Em todo o caso, e dependendo do editor usado,
