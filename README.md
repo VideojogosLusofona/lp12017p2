@@ -37,12 +37,52 @@ só pode deslocar-se na sua vizinhança de [Von Neumann] usando as teclas WASD
 (não usar _keypad_, pois o mesmo não existe em alguns portáteis, dificultando a
 avaliação do jogo).
 
+
+### Modo de funcionamento
+
+Ações disponíveis (cada ação requer uma _turn_):
+
+* WSAD para movimento (apenas aparecem movimentos válidos)
+* F, seguido de um número, para atacar um NPC no _tile_ atual
+* E, seguido de um número, para apanhar um item no _tile_ atual
+* G, seguido de um número, para largar um item no _tile_ atual
+* T, seguido de um número, para negociar com um comerciante no _tile_ atual
+
+ Cada _turn_ consome um HP do jogador.
+
+#### O jogador
+
+_A fazer_
+
+#### NPCs
+
+Todos os NPCs têm o seu HP e poder de ataque próprios. Os NPCs podem estar em
+três estados:
+
+* _Hostile_ - Ataca o jogador assim que o jogador se move para o respetivo
+_tile_.
+* _Neutral_ - NPC ignora o jogador.
+
+O jogador pode atacar qualquer NPC, e a partir desse momento o estado do NPC
+passa a ser _Hostile_. O jogador
+
+##### Combate
+
+_A fazer_
+
+##### Compra/venda de itens
+
+_A fazer_
+
 <a name="visualize"></a>
 
 ### Visualização do jogo
 
-A visualização do jogo deve ser feita em modo de texto (consola). Deve ser
-mostrado o seguinte:
+A visualização do jogo deve ser feita em modo de texto (consola).
+
+#### Ecrã principal
+
+O ecrã principal do jogo deve mostrar o seguinte:
 
 * Mapa do jogo, distiguindo claramente a parte explorada da parte inexplorada.
 * Estatísticas do jogador: nível atual, _hit points_ (HP), arma selecionada e
@@ -69,13 +109,13 @@ A [Figura 1](#fig1) mostra uma possível implementação da visualização do jo
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Player stats
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    ------------
                                                    Level     - 14
-☿.... ?☢... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    HP        - 34
+☿.... ☢.... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    HP        - 34
 ..... ..... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Weapon    - Sword
                                                    Inventory - 91% full
 ..... ..... ..... ..... ..... ~~~~~ ~~~~~ ~~~~~
 ..... ..... ..... ..... ..... ~~~~~ ~~~~~ ~~~~~
 
-..... ..... ..... ?.... ..... †☿... ☿☿¶☢? ~~~~~    Legend
+..... ..... ..... ?.... ..... †☿... ☿☿¶☢. ~~~~~    Legend
 ..... ..... ..... ..... ..... ..... ..... ~~~~~    ------
                                                       ⨀ - Player
 ~~~~~ ¶.... ..... ..... ✚☿... ..... ..... .....   EXIT! - Exit
@@ -86,8 +126,8 @@ A [Figura 1](#fig1) mostra uma possível implementação da visualização do jo
                                                       ✚ - HP Boost
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ✚☢... ..... ☢$... ~~~~~       † - Weapon
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ..... ..... ..... ~~~~~       ☢ - Trap
-                                                      ? - Secret
-~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~       $ - Gold
+                                                      $ - Gold
+~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~
 
 Messages
@@ -103,47 +143,34 @@ What do I see?
 * SOUTH : Trap, Gold (12)
 * HERE  : Neutral NPC, Weapon
 
-What will I do?
----------------
-* W - Move NORTH
-* A - Move WEST
-* S - Move SOUTH
-* D - Move EAST
-* E - Pick up/Use item
-* F - Attack NPC
-* T - Trade with NPC
-* I - Go to Inventory
+Options
+-------
+(W) Move NORTH      (A) Move WEST       (S) Move SOUTH    (D) Move EAST
+(F) Attack NPC      (T) Trade with NPC
+(E) Pick up item    (I) Go to Inventory
+
+>
 ```
 
-**Figura 1** - Possível implementação da visualização do jogo.
+**Figura 1** - Possível implementação da visualização do jogo (ecrã principal).
 
-### Modo de funcionamento
+#### Ecrã de ataque (opção F)
 
-Ações disponíveis (cada ação requer uma _turn_):
+_A fazer_
 
-* WSAD para movimento (apenas aparecem movimentos válidos)
-* F, seguido de um número, para atacar um NPC no _tile_ atual
-* E, seguido de um número, para apanhar um item no _tile_ atual
-* G, seguido de um número, para largar um item no _tile_ atual
-* T, seguido de um número, para negociar com um comerciante no _tile_ atual
+#### Ecrã de compra/venda (opção T)
 
- Cada _turn_ consome um HP do jogador.
+_A fazer_
 
-### NPCs
+#### Ecrã de apanhar item (opção E)
 
-Todos os NPCs têm o seu HP e poder de ataque próprios. Os NPCs podem estar em
-três estados:
+_A fazer_
 
-* _Hostile_ - Ataca o jogador assim que o jogador se move para o respetivo
-_tile_.
-* _Neutral_ - NPC ignora o jogador.
+#### Ecrã de inventário (opção I)
 
-O jogador pode atacar qualquer NPC, e a partir desse momento o estado do NPC
-passa a ser _Hostile_. O jogador
+_A fazer_
 
-### Combate
-
-Os comerciantes
+## Implementação
 
 <a name="orgclasses"></a>
 
@@ -156,13 +183,88 @@ nome. Por exemplo, uma classe chamada `Player` deve ser colocada no ficheiro
 forma lógica, e [cada classe deve ter uma responsabilidade específica e bem
 definida][SRP].
 
+<a name="fases"></a>
+
+### Fases da implementação
+
+#### Fase 1:
+
+_a fazer_
+
+A implementação completa desta fase equivale a 50% de cumprimento do
+[objetivo **O1**](#objetivos) (nota máxima 2.5).
+
+#### Fase 2:
+
+_a fazer_
+
+A implementação completa desta fase equivale a 60% de cumprimento do
+[objetivo **O1**](#objetivos) (nota máxima 3).
+
+#### Fase 3:
+
+_a fazer_
+
+A implementação completa desta fase equivale a 65% de cumprimento do
+[objetivo **O1**](#objetivos) (nota máxima 3.25).
+
+#### Fase 4:
+
+_a fazer_
+
+A implementação completa desta fase equivale a 70% de cumprimento do
+[objetivo **O1**](#objetivos) (nota máxima 3.5).
+
+#### Fase 5:
+
+_a fazer_
+
+A implementação completa desta fase equivale a 75% de cumprimento do
+[objetivo **O1**](#objetivos) (nota máxima 3.75).
+
+#### Fase 6:
+
+_a fazer_
+
+A implementação completa desta fase equivale a 80% de cumprimento do
+[objetivo **O1**](#objetivos) (nota máxima 4).
+
+#### Fase 7:
+
+_a fazer_
+
+A implementação completa desta fase equivale a 85% de cumprimento do
+[objetivo **O1**](#objetivos) (nota máxima 4.25).
+
+#### Fase 8:
+
+_a fazer_
+
+A implementação completa desta fase equivale a 90% de cumprimento do
+[objetivo **O1**](#objetivos) (nota máxima 4.5).
+
+#### Fase 9:
+
+_a fazer_
+
+A implementação completa desta fase equivale a 95% de cumprimento do
+[objetivo **O1**](#objetivos) (nota máxima 4.75).
+
+#### Fase 10:
+
+_a fazer_
+
+A implementação completa desta fase equivale a 100% de cumprimento do
+[objetivo **O1**](#objetivos) (nota máxima 5).
+
 <a name="objetivos"></a>
 
 ## Objetivos e critério de avaliação
 
 Este projeto tem os seguintes objetivos:
 
-* **O1** - Jogo deve funcionar como especificado.
+* **O1** - Jogo deve funcionar como especificado (ver [fases](#fases) de
+  implementação).
 * **O2** - Projeto e código bem organizados, nomeadamente: a) estrutura de
   classes bem pensada (ver secção <a href="#orgclasses">Organização do projeto
   e estrutura de classes</a>); b) código devidamente comentado e indentado; c)
@@ -236,10 +338,6 @@ Notas adicionais para entrega:
   [UTF-8] não é usada por omissão. Em todo o caso, e dependendo do editor usado,
   a codificação [UTF-8] pode ser selecionada na janela de "Save as" / "Guardar
   como", ou então nas preferências do editor utilizado.
-
-## Extensões opcionais
-
-_A definir_
 
 ## Honestidade académica
 
