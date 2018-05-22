@@ -21,34 +21,52 @@ Os alunos devem implementar um jogo _roguelike_ em C# com níveis
 [gerados procedimentalmente][GP] em grelhas 8x8. O jogador começa no lado
 esquerdo da grelha (1ª coluna), e o seu objetivo é encontrar a saída do nível,
 que se encontra do lado direito dessa mesma grelha (8ª coluna). Pelo meio o
-jogador pode encontrar NPCs (monstros, comerciantes) e encontrar itens
-(_power-ups_, _gold_, armas, escudos/armaduras, mapas), possivelmente
-apanhando-os. Podem eventualmente existir armadilhas ou segredos, sendo que
-estes últimos podem revelar-se armadilhas ou itens úteis.
+jogador pode encontrar NPCs (monstros, comerciantes), encontrar itens (comida,
+ouro, armas, mapas), possivelmente apanhando-os, e cair em armadilhas.
 
-Os níveis vão ficando progressivamente mais difíceis, com mais monstros, menos
-itens e mais armadilhas. O _score_ final do jogador é igual ao nível atingido,
-existindo uma tabela dos top 20 _high scores_, que deve persistir quando o
+Os níveis vão ficando progressivamente mais difíceis, com mais monstros, mais
+armadilhas e menos itens. O _score_ final do jogador é igual ao nível atingido,
+existindo uma tabela dos top 10 _high scores_, que deve persistir quando o
 programa termina e o PC é desligado.
 
 No início de cada nível, o jogador só tem conhecimento da sua vizinhança (de
-[Moore]). À medida que o jogador se desloca, o mapa vai-se revelando. O jogador
-só pode deslocar-se na sua vizinhança de [Von Neumann] usando as teclas WASD
-(não usar _keypad_, pois o mesmo não existe em alguns portáteis, dificultando a
-avaliação do jogo).
-
+[Von Neumann]). À medida que o jogador se desloca, o mapa vai-se revelando. O
+jogador só pode deslocar-se na sua vizinhança de [Von Neumann] usando as teclas
+WASD (não usar _keypad_, pois o mesmo não existe em alguns portáteis,
+dificultando a avaliação do jogo).
 
 ### Modo de funcionamento
 
-Ações disponíveis (cada ação requer uma _turn_):
+O jogo começa por apresentar o menu principal ao utilizador, que deve conter as
+seguintes opções:
 
-* WSAD para movimento (apenas aparecem movimentos válidos)
-* F, seguido de um número, para atacar um NPC no _tile_ atual
-* E, seguido de um número, para apanhar um item no _tile_ atual
-* G, seguido de um número, para largar um item no _tile_ atual
-* T, seguido de um número, para negociar com um comerciante no _tile_ atual
+1. New game
+2. High scores
+3. Credits
+4. Quit
 
- Cada _turn_ consome um HP do jogador.
+Caso o utilizador selecione as opções 2 ou 3, é mostrada a informação
+respetiva, pede-se ao utilizador para pressionar ENTER para continuar, e
+voltamos ao menu principal. A opção 4 termina o programa. Se for selecionada a
+opção 1, começa um novo jogo.
+
+As ações disponíveis em cada _turn_ são as seguintes:
+
+* `WSAD` para movimento (apenas aparecem movimentos válidos)
+* `F` para atacar um NPC no _tile_ atual
+* `T` para negociar com um NPC no _tile_ atual
+* `E` para apanhar um item no _tile_ atual
+* `I` para abrir o inventário; uma vez dentro do menu do inventário:
+  * `U`, seguido do número do item, para usar o item.
+    * No caso de uma arma, a mesma é equipada (selecionada para combate).
+    * No caso de comida, a mesma é consumida, aumentando o HP na proporção
+      especificada para a comida em questão.
+  * `D`, seguido do número do item, para largar o item no _tile atual_.
+    * No caso de existirem itens iguais acumulados, solicitar ao utilizador a
+      quantidade a largar no local.
+* `Q` para terminar o jogo.
+
+Em cada _turn_ é consumido automaticamente 1 HP do jogador.
 
 #### O jogador
 
@@ -123,11 +141,11 @@ A [Figura 1](#fig1) mostra uma possível implementação da visualização do jo
                                                       ~ - Unexplored
 ~~~~~ ~~~~~ ☢¶✚.. ..... ..... ..... ⨀☿†.. EXIT!       ¶ - Neutral NPC
 ~~~~~ ~~~~~ ..... ..... ..... ..... ..... EXIT!       ☿ - Hostile NPC
-                                                      ✚ - HP Boost
-~~~~~ ~~~~~ ~~~~~ ~~~~~ ✚☢... ..... ☢$... ~~~~~       † - Weapon
+                                                      ✚ - Food
+~~~~~ ~~~~~ ~~~~~ ~~~~~ ✚☢... ..... ☢$⍠.. ~~~~~       † - Weapon
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ..... ..... ..... ~~~~~       ☢ - Trap
                                                       $ - Gold
-~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~
+~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~       ⍠ - Map
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~
 
 Messages
@@ -147,7 +165,7 @@ Options
 -------
 (W) Move NORTH      (A) Move WEST       (S) Move SOUTH    (D) Move EAST
 (F) Attack NPC      (T) Trade with NPC
-(E) Pick up item    (I) Go to Inventory
+(E) Pick up item    (I) Inventory       (Q) Quit game
 
 >
 ```
@@ -170,6 +188,10 @@ _A fazer_
 
 _A fazer_
 
+#### Ecrã de terminação do jogo (opção Q)
+
+_A fazer_
+
 ## Implementação
 
 <a name="orgclasses"></a>
@@ -187,75 +209,144 @@ definida][SRP].
 
 ### Fases da implementação
 
-#### Fase 1:
+#### Fase 1
 
-_a fazer_
+Na fase 1 devem ser implementandos os seguintes pontos:
+
+* Menu principal, com todas as opções a funcionar excepto _High Scores_.
+* Jogo:
+  * Grelha do jogo contém apenas jogador e _Exit_, colocados aleatoriamente na
+    1ª e 8ª colunas da grelha, respetivamente.
+  * Jogador inicia jogo com HP igual a 100.
+  * Jogador controlável com as teclas WASD, quando chega à _Exit_ termina o
+    nível atual, começando um novo nível.
+  * Jogador perde 1 HP por cada _move_ no 1º nível, 2 HP por cada _move_ no 2º
+    nível, etc.
+  * Jogador morre quando HP chega a zero.
 
 A implementação completa desta fase equivale a 50% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 2.5).
 
-#### Fase 2:
+#### Fase 2
 
-_a fazer_
+Na fase 2 devem ser implementandos os seguintes pontos (além dos pontos
+indicados nas fases anteriores):
+
+* Implementação das partes exploradas e inexploradas do mapa. As partes
+  inexploradas devem ser claramente distinguíveis das partes exploradas.
 
 A implementação completa desta fase equivale a 60% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 3).
 
-#### Fase 3:
+#### Fase 3
 
-_a fazer_
+Na fase 3 devem ser implementandos os seguintes pontos (além dos pontos
+indicados nas fases anteriores):
+
+* Implementação de armadilhas: quando o jogador se move para um _tile_ que
+  contém uma armadilha, perde automaticamente o HP especificado para a
+  armadilha em questão.
 
 A implementação completa desta fase equivale a 65% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 3.25).
 
-#### Fase 4:
+#### Fase 4
 
-_a fazer_
+Na fase 4 devem ser implementandos os seguintes pontos (além dos pontos
+indicados nas fases anteriores):
+
+* Implementação dos _high scores_ usando ficheiros:
+  * Opção _High Scores_ do menu principal permite visualizar os 10 melhores
+    _scores_.
+  * Quando jogador morre, _score_ é guardado caso esteja entre os 10 melhores
+    _high scores_.
 
 A implementação completa desta fase equivale a 70% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 3.5).
 
-#### Fase 5:
+#### Fase 5
 
-_a fazer_
+Na fase 5 devem ser implementandos os seguintes pontos (além dos pontos
+indicados nas fases anteriores):
+
+* Jogador têm inventário que permite guardar itens até um determinado peso,
+  implementação da funcionalidade ``.
+* Implementação da funcionalidade `(E) Pick up item`.
+* Implementação da funcionalidade `(I) Inventory`.
+* Itens:
+  * Comida, armas e ouro: quando apanhados são guardados no inventário do
+    jogador, caso o mesmo ainda suporte o peso.
+  * Mapas: quando apanhados revelam o nível na sua totalidade; não são
+    guardados no inventário, mas tal como os restantes itens, desaparecem do
+    nível quando apanhados.
 
 A implementação completa desta fase equivale a 75% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 3.75).
 
-#### Fase 6:
+#### Fase 6
 
-_a fazer_
+Na fase 6 devem ser implementandos os seguintes pontos (além dos pontos
+indicados nas fases anteriores):
+
+* O jogador pode equipar uma das armas que tem no seu inventário. A arma
+  equipada não conta para o peso total do inventário. A arma anteriormente
+  equipada é movida para o inventário, caso não ultrapasse o limite de peso do
+  mesmo.
 
 A implementação completa desta fase equivale a 80% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4).
 
-#### Fase 7:
+#### Fase 7
 
-_a fazer_
+Na fase 7 devem ser implementandos os seguintes pontos (além dos pontos
+indicados nas fases anteriores):
+
+* NPCs e combate passivo
 
 A implementação completa desta fase equivale a 85% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4.25).
 
-#### Fase 8:
+#### Fase 8
 
-_a fazer_
+Na fase 8 devem ser implementandos os seguintes pontos (além dos pontos
+indicados nas fases anteriores):
+
+* NPCs e combate ativo
 
 A implementação completa desta fase equivale a 90% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4.5).
 
-#### Fase 9:
+#### Fase 9
 
-_a fazer_
+Na fase 9 devem ser implementandos os seguintes pontos (além dos pontos
+indicados nas fases anteriores):
+
+* NPCs e compra/venda de itens
 
 A implementação completa desta fase equivale a 95% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4.75).
 
-#### Fase 10:
+#### Fase 10
+
+Na fase 10 devem ser implementandos os seguintes pontos (além dos pontos
+indicados nas fases anteriores):
 
 _a fazer_
 
 A implementação completa desta fase equivale a 100% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 5).
+
+#### Fase extra
+
+Na fase extra devem ser implementandos os seguintes pontos (além dos pontos
+indicados nas fases anteriores):
+
+* Implementação de _save games_, com opção extra no menu principal de _load
+  game_.
+
+A implementação completa desta fase permite compensar eventuais problemas
+noutras partes do código e/ou do projeto, facilitando a obtenção da nota
+máxima de 5 valores.
 
 <a name="objetivos"></a>
 
@@ -397,7 +488,6 @@ Este enunciado é disponibilizados através da licença [CC BY-NC-SA 4.0].
 [SRP]:https://en.wikipedia.org/wiki/Single_responsibility_principle
 [KISS]:https://en.wikipedia.org/wiki/KISS_principle
 [GP]:https://en.wikipedia.org/wiki/Procedural_generation
-[Moore]:https://en.wikipedia.org/wiki/Moore_neighborhood
 [Von Neumann]:https://en.wikipedia.org/wiki/Von_Neumann_neighborhood
 [UTF-8]:https://en.wikipedia.org/wiki/UTF-8
 [Unicode]:https://en.wikipedia.org/wiki/Unicode
