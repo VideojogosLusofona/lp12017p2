@@ -45,45 +45,50 @@ A visualização do jogo deve ser feita em modo de texto (consola). Deve ser
 mostrado o seguinte:
 
 * Mapa do jogo, distiguindo claramente a parte explorada da parte inexplorada.
+* Estatísticas do jogador: nível atual, _hit points_ (HP), arma selecionada e
+percentagem de ocupação do inventário.
 * Em cada _tile_ do mapa explorado devem ser diferenciáveis os vários elementos
-presentes (itens, NPCs, etc), até um máximo razoável. Isto significa que um
-caractér pode não ser suficiente para representar razoavelmente um _tile_.
+presentes (itens, NPCs, etc), até um máximo razoável.
 * Uma legenda, explicando o que é cada elemento no mapa.
 * Uma ou mais mensagens descrevendo o resultado da ação realizada na _turn_
 anterior.
-* Mensagens descrevendo a _turn_ atual, nomeadamente o que está no tile atual e
-que ações é possível realizar, bem como o que está em cada um dos quadrados da
+* Descrição do que está no _tile_ atual, bem como nos _tiles_ na respetiva
 vizinhança de [Von Neumann].
+* Indicação das ações realizáveis.
 
 Uma vez que o C# suporta nativamente a representação [Unicode], os respetivos
 caracteres podem e devem ser usados para melhorar a visualização do jogo. Para
 o efeito deve ser incluída a instrução `Console.OutputEncoding = Encoding.UTF8;`
 no método `Main()` (é necessário usar o _namespace_ `System.Text`).
 
-```
-..... ..... ..... ..... ..... ..... ..... .....    Player stats
-..... ..... ..... ..... ..... ..... ..... .....    ------------
-                                                   Level     - 14
-..... ..... ..... ..... ..... ..... ..... .....    HP        - 34
-..... ..... ..... ..... ..... ..... ..... .....    Weapon    - Sword
-                                                   Inventory - 91% full
-..... ..... ..... ..... ..... ..... ..... .....
-..... ..... ..... ..... ..... ..... ..... .....
+A [Figura 1](#fig1) mostra uma possível implementação da visualização do jogo.
 
-..... ..... ..... ..... ..... ..... ..... .....    Legend
-..... ..... ..... ..... ..... ..... ..... .....    ------
+<a name="fig1"></a>
+
+```
+~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Player stats
+~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    ------------
+                                                   Level     - 14
+☿.... ?☢... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    HP        - 34
+..... ..... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Weapon    - Sword
+                                                   Inventory - 91% full
+..... ..... ..... ..... ..... ~~~~~ ~~~~~ ~~~~~
+..... ..... ..... ..... ..... ~~~~~ ~~~~~ ~~~~~
+
+..... ..... ..... ?.... ..... †☿... ☿☿¶☢? ~~~~~    Legend
+..... ..... ..... ..... ..... ..... ..... ~~~~~    ------
                                                       ⨀ - Player
-..... ..... ..... ..... ..... ..... ..... .....    EXIT - Exit
-..... ..... ..... ..... ..... ..... ..... .....       . - Empty
+~~~~~ ¶.... ..... ..... ✚☿... ..... ..... .....   EXIT! - Exit
+~~~~~ ..... ..... ..... ..... ..... ..... .....       . - Empty
                                                       ~ - Unexplored
-..... ..... ..... ..... ..... ..... ⨀.... EXIT.       ꘐ - Neutral NPC
-..... ..... ..... ..... ..... ..... ..... EXIT.       ꘒ - Hostile NPC
-                                                      ⛨ - HP Boost
-..... ..... ..... ..... ..... ..... ..... .....       † - Weapon
-..... ..... ..... ..... ..... ..... ..... .....       ☢ - Trap
+~~~~~ ~~~~~ ☢¶✚.. ..... ..... ..... ⨀☿†.. EXIT!       ¶ - Neutral NPC
+~~~~~ ~~~~~ ..... ..... ..... ..... ..... EXIT!       ☿ - Hostile NPC
+                                                      ✚ - HP Boost
+~~~~~ ~~~~~ ~~~~~ ~~~~~ ✚☢... ..... ☢$... ~~~~~       † - Weapon
+~~~~~ ~~~~~ ~~~~~ ~~~~~ ..... ..... ..... ~~~~~       ☢ - Trap
                                                       ? - Secret
-..... ..... ..... ..... ..... ..... ..... .....       $ - Gold
-..... ..... ..... ..... ..... ..... ..... .....
+~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~       $ - Gold
+~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~
 
 Messages
 --------
@@ -104,10 +109,13 @@ What will I do?
 * A - Move WEST
 * S - Move SOUTH
 * D - Move EAST
+* E - Pick up/Use item
 * F - Attack NPC
 * T - Trade with NPC
 * I - Go to Inventory
 ```
+
+**Figura 1** - Possível implementação da visualização do jogo.
 
 ### Modo de funcionamento
 
