@@ -12,11 +12,6 @@ work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 ## Descrição do problema
 
-Os alunos devem implementar, em grupo de 2 a 3 elementos, um jogo _roguelike_
-usando a linguagem C#.
-
-### O jogo
-
 Os alunos devem implementar um jogo _roguelike_ em C# com níveis
 [gerados procedimentalmente][GP] em grelhas 8x8. O jogador começa no lado
 esquerdo da grelha (1ª coluna), e o seu objetivo é encontrar a saída do nível,
@@ -52,37 +47,54 @@ opção 1, começa um novo jogo.
 
 As ações disponíveis em cada _turn_ são as seguintes:
 
-* `WSAD` para movimento (apenas aparecem movimentos válidos)
-* `F` para atacar um NPC no _tile_ atual
-* `T` para negociar com um NPC no _tile_ atual
-* `E` para apanhar um item no _tile_ atual
+* `WSAD` para movimento (apenas aparecem movimentos válidos).
+* `F` para atacar um NPC no _tile_ atual.
+* `T` para negociar com um NPC no _tile_ atual.
+* `E` para apanhar um item no _tile_ atual.
 * `I` para abrir o inventário; uma vez dentro do menu do inventário:
   * `U`, seguido do número do item, para usar o item.
-    * No caso de uma arma, a mesma é equipada (selecionada para combate).
+    * No caso de uma arma, a mesma é equipada (selecionada para combate). Caso
+      exista uma arma equipada anteriormente, a mesma passa para o inventário
+      se o mesmo suportar o seu peso (senão é largada no local).
     * No caso de comida, a mesma é consumida, aumentando o HP na proporção
-      especificada para a comida em questão.
+      especificada para a comida em questão, até um máximo de 100.
   * `D`, seguido do número do item, para largar o item no _tile atual_.
     * No caso de existirem itens iguais acumulados, solicitar ao utilizador a
       quantidade a largar no local.
+  * `B` fecha o inventário e volta ao ecrã principal, sem gastar a _turn_.
 * `Q` para terminar o jogo.
 
 Em cada _turn_ é consumido automaticamente 1 HP do jogador.
 
 #### O jogador
 
-_A fazer_
+O jogador tem várias características:
+
+* **HP** (_hit points_) - Vida do jogador, entre 0 e 100; quando chega a zero o
+  jogador morre.
+* **Arma equipada** - A arma que o jogador usa em combate.
+* **Inventário** - Itens que o jogador transporta (até um máximo de peso
+  pré-definido), nomeadamente comida, armas (que não a arma equipada) e ouro.
+  Itens exatamente iguais devem ser agrupados, por exemplo 10 _gold_, 3 _apple_,
+  1 _dagger_ ou 2 _sword_.
 
 #### NPCs
 
-Todos os NPCs têm o seu HP e poder de ataque próprios. Os NPCs podem estar em
-três estados:
+Os NPCs têm as seguintes características:
 
-* _Hostile_ - Ataca o jogador assim que o jogador se move para o respetivo
-_tile_.
-* _Neutral_ - NPC ignora o jogador.
+* **HP** (_hit points_) - Vida do NPC, semelhante à do jogador; inicialmente os
+  NPCs devem ter HPs relativamente pequenos, mas à medida que o jogo progride,
+  o HP dos NPCs deve ir aumentando. O HP inicial dos NPCs é aleatório.
+* **Poder de ataque** - O máximo de HP que o NPC pode retirar ao jogador caso o
+  ataque.
+* **State** - Estado do NPC, um de dois estados possíveis:
+  * _Hostile_ - Ataca o jogador assim que o jogador se move para o respetivo
+    _tile_.
+  * _Neutral_ - NPC ignora o jogador quando o jogador se move para o respetivo
+    _tile_.
 
 O jogador pode atacar qualquer NPC, e a partir desse momento o estado do NPC
-passa a ser _Hostile_. O jogador
+passa a ser _Hostile_, independentemente do seu estado inicial. O jogador
 
 ##### Combate
 
@@ -124,12 +136,14 @@ A [Figura 1](#fig1) mostra uma possível implementação da visualização do jo
 <a name="fig1"></a>
 
 ```
++++++++++++++++++++++++++++ LP1 Rogue : Level 009 +++++++++++++++++++++++++++
+
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Player stats
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    ------------
-                                                   Level     - 14
-☿.... ☢.... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    HP        - 34
-..... ..... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Weapon    - Sword
-                                                   Inventory - 91% full
+                                                   HP        - 34
+☿.... ☢.... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Weapon    - Sword
+..... ..... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Inventory - 91% full
+
 ..... ..... ..... ..... ..... ~~~~~ ~~~~~ ~~~~~
 ..... ..... ..... ..... ..... ~~~~~ ~~~~~ ~~~~~
 
