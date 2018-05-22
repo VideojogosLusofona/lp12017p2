@@ -12,19 +12,19 @@ work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 ## Descrição do problema
 
-Os alunos devem implementar um jogo _roguelike_.
-Deve ser usada a linguagem C# e os grupos podem ter entre 2 a 3 elementos.
+Os alunos devem implementar, em grupo de 2 a 3 elementos, um jogo _roguelike_
+usando a linguagem C#.
 
 ### O jogo
 
-Os alunos devem implementar um jogo _roguelike_ com níveis
+Os alunos devem implementar um jogo _roguelike_ em C# com níveis
 [gerados procedimentalmente][GP] em grelhas 8x8. O jogador começa no lado
 esquerdo da grelha (1ª coluna), e o seu objetivo é encontrar a saída do nível,
 que se encontra do lado direito dessa mesma grelha (8ª coluna). Pelo meio o
 jogador pode encontrar NPCs (monstros, comerciantes) e encontrar itens
 (_power-ups_, _gold_, armas, escudos/armaduras, mapas), possivelmente
-apanhando-os. Podem eventualmente existir armadilhas ou segredos que podem
-revelar-se armadilhas ou itens úteis.
+apanhando-os. Podem eventualmente existir armadilhas ou segredos, sendo que
+estes últimos podem revelar-se armadilhas ou itens úteis.
 
 Os níveis vão ficando progressivamente mais difíceis, com mais monstros, menos
 itens e mais armadilhas. O _score_ final do jogador é igual ao nível atingido,
@@ -41,11 +41,101 @@ avaliação do jogo).
 
 ### Visualização do jogo
 
-_Em breve_
+A visualização do jogo deve ser feita em modo de texto (consola). Deve ser
+mostrado o seguinte:
+
+* Mapa do jogo, distiguindo claramente a parte explorada da parte inexplorada.
+* Em cada _tile_ do mapa explorado devem ser diferenciáveis os vários elementos
+presentes (itens, NPCs, etc), até um máximo razoável. Isto significa que um
+caractér pode não ser suficiente para representar razoavelmente um _tile_.
+* Uma legenda, explicando o que é cada elemento no mapa.
+* Uma ou mais mensagens descrevendo o resultado da ação realizada na _turn_
+anterior.
+* Mensagens descrevendo a _turn_ atual, nomeadamente o que está no tile atual e
+que ações é possível realizar, bem como o que está em cada um dos quadrados da
+vizinhança de [Von Neumann].
+
+Uma vez que o C# suporta nativamente a representação [Unicode], os respetivos
+caracteres podem e devem ser usados para melhorar a visualização do jogo. Para
+o efeito deve ser incluída a instrução `Console.OutputEncoding = Encoding.UTF8;`
+no método `Main()` (é necessário usar o _namespace_ `System.Text`).
+
+```
+..... ..... ..... ..... ..... ..... ..... .....    Player stats
+..... ..... ..... ..... ..... ..... ..... .....    ------------
+                                                   Level     - 14
+..... ..... ..... ..... ..... ..... ..... .....    HP        - 34
+..... ..... ..... ..... ..... ..... ..... .....    Weapon    - Sword
+                                                   Inventory - 91% full
+..... ..... ..... ..... ..... ..... ..... .....
+..... ..... ..... ..... ..... ..... ..... .....
+
+..... ..... ..... ..... ..... ..... ..... .....    Legend
+..... ..... ..... ..... ..... ..... ..... .....    ------
+                                                      ⨀ - Player
+..... ..... ..... ..... ..... ..... ..... .....    EXIT - Exit
+..... ..... ..... ..... ..... ..... ..... .....       . - Empty
+                                                      ~ - Unexplored
+..... ..... ..... ..... ..... ..... ⨀.... EXIT.       ꘐ - Neutral NPC
+..... ..... ..... ..... ..... ..... ..... EXIT.       ꘒ - Hostile NPC
+                                                      ⛨ - HP Boost
+..... ..... ..... ..... ..... ..... ..... .....       † - Weapon
+..... ..... ..... ..... ..... ..... ..... .....       ☢ - Trap
+                                                      ? - Secret
+..... ..... ..... ..... ..... ..... ..... .....       $ - Gold
+..... ..... ..... ..... ..... ..... ..... .....
+
+Messages
+--------
+* You moved WEST
+* You were attacked by a demon and lost 5 HP
+
+What do I see?
+--------------
+* NORTH : Empty
+* EAST  : Exit
+* WEST  : Empty
+* SOUTH : Trap, Gold (12)
+* HERE  : Neutral NPC, Weapon
+
+What will I do?
+---------------
+* W - Move NORTH
+* A - Move WEST
+* S - Move SOUTH
+* D - Move EAST
+* F - Attack NPC
+* T - Trade with NPC
+* I - Go to Inventory
+```
 
 ### Modo de funcionamento
 
-_Em breve_
+Ações disponíveis (cada ação requer uma _turn_):
+
+* WSAD para movimento (apenas aparecem movimentos válidos)
+* F, seguido de um número, para atacar um NPC no _tile_ atual
+* E, seguido de um número, para apanhar um item no _tile_ atual
+* G, seguido de um número, para largar um item no _tile_ atual
+* T, seguido de um número, para negociar com um comerciante no _tile_ atual
+
+ Cada _turn_ consome um HP do jogador.
+
+### NPCs
+
+Todos os NPCs têm o seu HP e poder de ataque próprios. Os NPCs podem estar em
+três estados:
+
+* _Hostile_ - Ataca o jogador assim que o jogador se move para o respetivo
+_tile_.
+* _Neutral_ - NPC ignora o jogador.
+
+O jogador pode atacar qualquer NPC, e a partir desse momento o estado do NPC
+passa a ser _Hostile_. O jogador
+
+### Combate
+
+Os comerciantes
 
 <a name="orgclasses"></a>
 
@@ -133,10 +223,10 @@ Notas adicionais para entrega:
 * A solução deve ser desenvolvida no Visual Studio 2017, Visual Studio Code,
   Visual Studio Mac ou MonoDevelop.
 * O projeto deve ser do tipo Console App (preferencialmente .NET Framework).
-* Todos os ficheiros do projeto devem ser gravados em codificação UTF-8. Este
+* Todos os ficheiros do projeto devem ser gravados em codificação [UTF-8]. Este
   pormenor é especialmente importante em Windows pois regra geral a codificação
-  UTF-8 não é usada por omissão. Em todo o caso, e dependendo do editor usado,
-  a codificação UTF-8 pode ser selecionada na janela de "Save as" / "Guardar
+  [UTF-8] não é usada por omissão. Em todo o caso, e dependendo do editor usado,
+  a codificação [UTF-8] pode ser selecionada na janela de "Save as" / "Guardar
   como", ou então nas preferências do editor utilizado.
 
 ## Extensões opcionais
@@ -203,3 +293,5 @@ Este enunciado é disponibilizados através da licença [CC BY-NC-SA 4.0].
 [GP]:https://en.wikipedia.org/wiki/Procedural_generation
 [Moore]:https://en.wikipedia.org/wiki/Moore_neighborhood
 [Von Neumann]:https://en.wikipedia.org/wiki/Von_Neumann_neighborhood
+[UTF-8]:https://en.wikipedia.org/wiki/UTF-8
+[Unicode]:https://en.wikipedia.org/wiki/Unicode
