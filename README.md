@@ -16,7 +16,7 @@ Os alunos devem implementar um jogo _roguelike_ em C# com níveis
 [gerados procedimentalmente][GP] em grelhas 8x8. O jogador começa no lado
 esquerdo da grelha (1ª coluna), e o seu objetivo é encontrar a saída do nível,
 que se encontra do lado direito dessa mesma grelha (8ª coluna). Pelo meio o
-jogador pode encontrar NPCs (monstros, comerciantes), encontrar itens (comida,
+jogador pode encontrar NPCs (agressivos ou neutros), encontrar itens (comida,
 ouro, armas, mapas), possivelmente apanhando-os, e cair em armadilhas.
 
 Os níveis vão ficando progressivamente mais difíceis, com mais monstros, mais
@@ -25,9 +25,9 @@ existindo uma tabela dos top 10 _high scores_, que deve persistir quando o
 programa termina e o PC é desligado.
 
 No início de cada nível, o jogador só tem conhecimento da sua vizinhança (de
-[Von Neumann]). À medida que o jogador se desloca, o mapa vai-se revelando. O
-jogador só pode deslocar-se na sua vizinhança de [Von Neumann] usando as teclas
-WASD (não usar _keypad_, pois o mesmo não existe em alguns portáteis,
+[Von Neumann][]). À medida que o jogador se desloca, o mapa vai-se revelando. O
+jogador só pode deslocar-se na sua vizinhança de [Von Neumann][] usando as
+teclas WASD (não usar _keypad_, pois o mesmo não existe em alguns portáteis,
 dificultando a avaliação do jogo).
 
 ### Modo de funcionamento
@@ -35,73 +35,67 @@ dificultando a avaliação do jogo).
 O jogo começa por apresentar o menu principal ao utilizador, que deve conter as
 seguintes opções:
 
-1. New game
-2. High scores
-3. Credits
-4. Quit
+1.  New game
+2.  High scores
+3.  Credits
+4.  Quit
 
 Caso o utilizador selecione as opções 2 ou 3, é mostrada a informação
-respetiva, pede-se ao utilizador para pressionar ENTER para continuar, e
-voltamos ao menu principal. A opção 4 termina o programa. Se for selecionada a
+solicitada; o utilizador pressiona ENTER (ou qualquer tecla) para continuar,
+voltando ao menu principal. A opção 4 termina o programa. Se for selecionada a
 opção 1, começa um novo jogo.
 
 As ações disponíveis em cada _turn_ são as seguintes:
 
-* `WSAD` para movimento (apenas aparecem movimentos válidos).
+* `WSAD` para movimento.
 * `F` para atacar um NPC no _tile_ atual.
 * `T` para negociar com um NPC no _tile_ atual.
 * `E` para apanhar um item no _tile_ atual.
-* `I` para abrir o inventário; uma vez dentro do menu do inventário:
-  * `U`, seguido do número do item, para usar o item.
-    * No caso de uma arma, a mesma é equipada (selecionada para combate). Caso
-      exista uma arma equipada anteriormente, a mesma passa para o inventário
-      se o mesmo suportar o seu peso (senão é largada no local).
-    * No caso de comida, a mesma é consumida, aumentando o HP na proporção
-      especificada para a comida em questão, até um máximo de 100.
-    * Não é possível usar ouro diretamente (serve apenas para trocas com NPCs).
-  * `D`, seguido do número do item, para largar o item no _tile atual_.
-    * No caso de existirem itens iguais acumulados, solicitar ao utilizador a
-      quantidade a largar no local.
-  * `B` fecha o inventário e volta ao ecrã principal, sem gastar a _turn_.
+* `U`, seguido de um número de item, para usar um item (arma ou comida), ou 0
+  para voltar atrás.
+  * No caso de uma arma, a mesma é equipada (selecionada para combate). Caso
+    exista uma arma equipada anteriormente, a mesma passa para o inventário.
+  * No caso de comida, a mesma é consumida, aumentando o HP na proporção
+    especificada para a comida em questão, até um máximo de 100.
+* `D`, seguido do número do item, para largar o item no _tile atual_ (arma,
+  comida ou ouro), ou 0 para voltar atrás. No caso do ouro, solicitar ao
+  utilizador a quantidade a largar no local.
 * `Q` para terminar o jogo.
 
-Em cada _turn_ é consumido automaticamente 1 HP do jogador.
+Em cada _turn_ é consumido automaticamente 1 HP do jogador, independentemente
+da ação realizada.
 
-#### O jogador
+#### Personagens
 
-O jogador tem várias características:
+Os diferentes personagens do jogo (jogador e NPCs), têm as seguintes
+características em comum:
 
-* `HP` (_hit points_) - Vida do jogador, entre 0 e 100; quando chega a zero o
-  jogador morre.
-* `SelectedWeapon` - A arma que o jogador usa em combate.
-* `Inventory` - Itens que o jogador transporta (até um máximo de peso
-  pré-definido), nomeadamente comida, armas (que não a arma equipada) e ouro.
-  Itens exatamente iguais devem ser agrupados, por exemplo 10 _gold_, 3 _apple_,
-  1 _dagger_ ou 2 _sword_.
+* `HP` (_hit points_) - Vida do personagem, entre 0 e 100; quando chega a zero
+  o personagem morre.
+* `SelectedWeapon` - A arma que o personagem usa em combate.
+* `Inventory` - Lista de itens que o personagem transporta, nomeadamente comida
+  e armas.
+* `Gold` - Quantidade de ouro que o personagem possui.
 
-#### NPCs
+Por sua vez, o jogador tem algumas características específicas:
 
-Os NPCs têm as seguintes características:
+* `Weight` - Peso total de tudo o que o jogador transporta, nomeadamente
+  itens no inventário (armas e comida), arma selecionada e ouro.
+* `MaxWeight` - Constante que define o peso máximo que o jogador consegue
+  carregar.
 
-* `HP` (_hit points_) - Vida do NPC, semelhante à do jogador; inicialmente os
-  NPCs devem ter HPs relativamente pequenos, mas à medida que o jogo progride,
-  o HP dos NPCs deve ir aumentando. O HP inicial dos NPCs é aleatório.
-* `AttackPower` - O máximo de HP que o NPC pode retirar ao jogador em
-  cada ataque.
+Finalmente, os NPCs têm a seguinte característica específica:
+
 * `State` - Estado do NPC, um de dois estados possíveis:
   * _Hostile_ - Ataca o jogador assim que o jogador se move para o respetivo
     _tile_.
   * _Neutral_ - NPC ignora o jogador quando o jogador se move para o respetivo
-    _tile_.
-
-O jogador pode atacar qualquer NPC presente na _tile_ atual, e a partir desse
-momento o estado desse NPC passa a ser _Hostile_, independentemente do seu
-estado anterior.
+    _tile_. Caso o jogador ataque um NPC neste estado, o estado do NPC é
+    alterado para _Hostile_.
 
 #### Itens
 
-Todos os itens podem ser colocados no inventário do jogador e têm as seguintes
-características:
+Todos os itens têm as seguintes características:
 
 * `Weight` - Peso do item.
 * `Value` - Valor do item.
@@ -109,38 +103,74 @@ características:
 Existem os seguintes itens em concreto:
 
 * Comida - Podem existir diferentes tipos de comida, à escolha dos alunos. Cada
-tipo diferente de comida fornece ao jogador um HP pré-definido (`HPIncrease`)
-quando usado.
+  tipo diferente de comida fornece ao jogador um HP pré-definido (`HPIncrease`)
+  quando usado.
 * Armas - Podem existir diferentes tipos de armas, à escolha dos alunos. Cada
-tipo diferente de arma tem um `AttackPower` e `Durability` específicos. O
-primeiro, inteiro entre 1 e 100, representa o máximo de HP que o jogador pode
-retirar ao NPC quando o ataca. A `Durability`, _float_ entre 0 e 1, representa
-a probabilidade da arma não se estragar quando usada num ataque. As arma são
-retiradas do jogo no momento em que se estragam.
+  tipo diferente de arma tem um `AttackPower` e `Durability` específicos. O
+  primeiro, inteiro entre 1 e 100, representa o máximo de HP que o jogador pode
+  retirar ao NPC quando o ataca. A `Durability`, _float_ entre 0 e 1, representa
+  a probabilidade da arma não se estragar quando usada num ataque. As arma são
+  retiradas do jogo no momento em que se estragam.
 * Ouro - Pode ser usado como moeda em negociações com NPCs. Cada item de ouro
-tem o valor 1.
+  tem um `Value` de 1 e um `Weight` de 0.1.
+
+A comida e as armas podem ser colocadas no inventário do jogador. O jogador
+pode ter ainda (fora do inventário) uma arma equipada e uma quantidade de ouro.
+Todos estes itens contribuem para o peso carregado pelo jogador.
 
 #### Mapas
 
 Existe um mapa por nível, colocado aleatoriamente num _tile_. Caso o jogador
 apanhe o mapa, todas as partes inexploradas do nível são reveladas.
 
+#### Compra/venda de itens
+
+O jogador pode negociar com NPCs no estado _Neutral_. Só são permitidas trocas
+entre ouro e itens.
+
+_A completar_
+
 #### Combate
 
 Um NPC `Hostile` ataca o jogador quando este entra ou se mantém no _tile_ onde
 o NPC está presente. A quantidade de HP que o jogador perde é igual a um valor
-aleatório entre 0 e o `AttackPower` do NPC.
+aleatório entre 0 e o `AttackPower` da arma equipada pelo NPC.
 
 O jogador pode atacar qualquer NPC presente no mesmo _tile_ selecionando a
 opção `F`. A quantidade de HP que o jogador retira ao NPC é igual a um valor
-aleatório entre 0 e o `AttackPower` da arma equipada. O jogador não pode atacar
-NPCs senão tiver uma arma equipada.
+aleatório entre 0 e o `AttackPower` da arma equipada.
 
-#### Compra/venda de itens
+Quando é realizado um ataque pelo jogador ou pelo NPC, existe uma probabilidade
+igual a 1 - `Durability` da arma equipada se partir (no caso de ataque sem arma
+esta questão é ignorada). Neste caso a arma é removida do respetivo inventário
+e do jogo.
 
-_A fazer_
+Caso o jogador ou o NPC não tenham uma arma equipada, podem: a) gastar uma
+_turn_ a equipar uma arma que tenham no inventário; ou, b) atacar sem arma, com
+um `AttackPower` inferior a qualquer arma do jogo. O jogador pode ainda fugir
+para um _tile_ vizinho (os NPCs não se movem entre _tiles_).
 
-<a name="visualize"></a>
+Tal como o jogador, o NPC pode optar por gastar uma _turn_ a consumir comida
+caso a tenha e caso o seu HP esteja muito baixo.
+
+Caso o jogador vença o NPC (ou seja, caso o HP do NPC diminua até zero), o
+NPC desaparece do jogo, deixando para trás os itens que carregava (comida,
+armas e/ou ouro), que o jogador pode ou não apanhar.
+
+Se o NPC vencer o jogador (ou seja, caso o HP do jogador chegue a zero), o jogo
+termina.
+
+#### Fim do jogo
+
+O jogo pode terminar de duas formas:
+
+1. Quando o HP do jogador baixa até zero devido a cansaço (pois o jogador perde
+   1 HP por _turn_) ou devido a combate.
+2. Quando o jogador seleciona a opção `Q`.
+
+Em qualquer dos casos, verifica-se se o nível atingido está entre os 10
+melhores, e em caso afirmativo, solicita-se ao jogador o seu nome para figurar
+na tabela de _high scores_.
 
 ### Visualização do jogo
 
