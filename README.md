@@ -494,7 +494,7 @@ preliminar.
 
 ## Entrega
 
-O projeto deve ser entregue via Moodle até às 23h de 10 de junho de 2018.
+O projeto deve ser entregue via Moodle até às 23h de 17 de junho de 2018.
 Deve ser submetido um ficheiro `zip` com os seguintes conteúdos:
 
 * Solução completa do projeto, contendo adicionalmente e obrigatoriamente:
