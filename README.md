@@ -17,7 +17,7 @@ Os alunos devem implementar um jogo _roguelike_ em C# com níveis
 esquerdo da grelha (1ª coluna), e o seu objetivo é encontrar a saída do nível,
 que se encontra do lado direito dessa mesma grelha (8ª coluna). Pelo meio o
 jogador pode encontrar NPCs (agressivos ou neutros), encontrar itens (comida,
-ouro, armas, mapas), possivelmente apanhando-os, e cair em armadilhas.
+armas, mapas), possivelmente apanhando-os, e cair em armadilhas.
 
 Os níveis vão ficando progressivamente mais difíceis, com mais monstros, mais
 armadilhas e menos itens. O _score_ final do jogador é igual ao nível atingido,
@@ -35,10 +35,10 @@ dificultando a avaliação do jogo).
 O jogo começa por apresentar o menu principal ao utilizador, que deve conter as
 seguintes opções:
 
-1.  New game
-2.  High scores
-3.  Credits
-4.  Quit
+1. New game
+2. High scores
+3. Credits
+4. Quit
 
 Caso o utilizador selecione as opções 2 ou 3, é mostrada a informação
 solicitada; o utilizador pressiona ENTER (ou qualquer tecla) para continuar,
@@ -49,43 +49,48 @@ As ações disponíveis em cada _turn_ são as seguintes:
 
 * `WSAD` para movimento.
 * `F` para atacar um NPC no _tile_ atual.
-* `T` para negociar com um NPC no _tile_ atual.
-* `E` para apanhar um item no _tile_ atual.
-* `U`, seguido de um número de item, para usar um item (arma ou comida), ou 0
-  para voltar atrás.
+* `E` para apanhar um item no _tile_ atual (incluindo mapas).
+* `U` para usar um item (arma ou comida).
   * No caso de uma arma, a mesma é equipada (selecionada para combate). Caso
     exista uma arma equipada anteriormente, a mesma passa para o inventário.
-  * No caso de comida, a mesma é consumida, aumentando o HP na proporção
+  * No caso de comida, a mesma é consumida, aumentando o HP na quantidade
     especificada para a comida em questão, até um máximo de 100.
-* `D`, seguido do número do item, para largar o item no _tile atual_ (arma,
-  comida ou ouro), ou 0 para voltar atrás. No caso do ouro, solicitar ao
-  utilizador a quantidade a largar no local.
+* `V` para deixar cair um item (arma ou comida ou ouro) no _tile_ atual.
 * `Q` para terminar o jogo.
+
+As opções `F`, `E`, `U` e `V` devem ser seguidas de um número, indicando qual o
+NPC a atacar ou o item a apanhar/usar/deixar cair. Deve ser permitido cancelar
+a opção antes da indicação do número, sem que o jogador perca uma _turn_.
 
 Em cada _turn_ é consumido automaticamente 1 HP do jogador, independentemente
 da ação realizada.
 
-#### Personagens
+#### O jogador
 
-Os diferentes personagens do jogo (jogador e NPCs), têm as seguintes
-características em comum:
+O jogador tem várias características, algumas definidas diretamente, outras
+calculáveis a partir das restantes:
 
-* `HP` (_hit points_) - Vida do personagem, entre 0 e 100; quando chega a zero
-  o personagem morre.
+* `HP` (_hit points_) - Vida do jogador, entre 0 e 100; quando chega a zero
+  o jogador morre.
 * `SelectedWeapon` - A arma que o personagem usa em combate.
 * `Inventory` - Lista de itens que o personagem transporta, nomeadamente comida
   e armas.
-* `Gold` - Quantidade de ouro que o personagem possui.
-
-Por sua vez, o jogador tem algumas características específicas:
-
+* `MaxWeight` - Constante que define o peso máximo que o jogador pode carregar.
 * `Weight` - Peso total de tudo o que o jogador transporta, nomeadamente
-  itens no inventário (armas e comida), arma selecionada e ouro.
-* `MaxWeight` - Constante que define o peso máximo que o jogador consegue
-  carregar.
+  itens no inventário (armas e comida) e a arma selecionada. Não pode
+  ultrapassar `MaxWeight`.
 
-Finalmente, os NPCs têm a seguinte característica específica:
+#### NPCs
 
+Os NPCs têm as seguintes características:
+
+* `HP` (_hit points_) - Vida do NPC, semelhante à do jogador. Inicialmente os
+  NPCs devem ter HPs relativamente pequenos, aumentando à medida que o jogo
+  progride para níveis mais difíceis. O HP inicial dos NPCs é aleatório.
+* `AttackPower` - O máximo de HP que o NPC pode retirar ao jogador em cada
+  ataque. Inicialmente os NPCs devem ter um `AttackPower` relativamente pequeno,
+  aumentando à medida que o jogo progride para níveis mais difíceis. O
+  `AttackPower` de cada NPC é aleatório.
 * `State` - Estado do NPC, um de dois estados possíveis:
   * _Hostile_ - Ataca o jogador assim que o jogador se move para o respetivo
     _tile_.
@@ -111,24 +116,16 @@ Existem os seguintes itens em concreto:
   retirar ao NPC quando o ataca. A `Durability`, _float_ entre 0 e 1, representa
   a probabilidade da arma não se estragar quando usada num ataque. As arma são
   retiradas do jogo no momento em que se estragam.
-* Ouro - Pode ser usado como moeda em negociações com NPCs. Cada item de ouro
-  tem um `Value` de 1 e um `Weight` de 0.1.
 
-A comida e as armas podem ser colocadas no inventário do jogador. O jogador
-pode ter ainda (fora do inventário) uma arma equipada e uma quantidade de ouro.
-Todos estes itens contribuem para o peso carregado pelo jogador.
+Os itens podem existir em qualquer _tile_ do nível (excepto `EXIT!`) bem como
+no inventário do jogador (e no caso das armas, serem equipadas pelo jogador).
+Podem ainda ser largados pelos NPCs no _tile_ onde se encontram quando perdem
+um combate com o jogador.
 
 #### Mapas
 
 Existe um mapa por nível, colocado aleatoriamente num _tile_. Caso o jogador
 apanhe o mapa, todas as partes inexploradas do nível são reveladas.
-
-#### Compra/venda de itens
-
-O jogador pode negociar com NPCs no estado _Neutral_. Só são permitidas trocas
-entre ouro e itens.
-
-_A completar_
 
 #### Combate
 
@@ -137,40 +134,47 @@ o NPC está presente. A quantidade de HP que o jogador perde é igual a um valor
 aleatório entre 0 e o `AttackPower` da arma equipada pelo NPC.
 
 O jogador pode atacar qualquer NPC presente no mesmo _tile_ selecionando a
-opção `F`. A quantidade de HP que o jogador retira ao NPC é igual a um valor
-aleatório entre 0 e o `AttackPower` da arma equipada.
+opção `F` e especificando qual o NPC a atacar. A quantidade de HP que o jogador
+retira ao NPC é igual a um valor aleatório entre 0 e o `AttackPower` da arma
+equipada. O jogador não pode atacar NPCs senão tiver uma arma equipada.
 
-Quando é realizado um ataque pelo jogador ou pelo NPC, existe uma probabilidade
-igual a 1 - `Durability` da arma equipada se partir (no caso de ataque sem arma
-esta questão é ignorada). Neste caso a arma é removida do respetivo inventário
-e do jogo.
+Quando é realizado um ataque pelo jogador, existe uma probabilidade igual a
+`1 - Durability` da arma equipada se partir. Neste caso a arma é removida das
+"mãos" do jogador e do jogo.
 
-Caso o jogador ou o NPC não tenham uma arma equipada, podem: a) gastar uma
-_turn_ a equipar uma arma que tenham no inventário; ou, b) atacar sem arma, com
-um `AttackPower` inferior a qualquer arma do jogo. O jogador pode ainda fugir
-para um _tile_ vizinho (os NPCs não se movem entre _tiles_).
+Caso o jogador não tenha uma arma equipada, pode gastar uma _turn_ a equipar
+uma arma que tenha no inventário. O jogador pode ainda gastar uma _turn_ a
+consumir comida (caso a tenha) se considerar que o seu HP está muito baixo. Em
+ambos os casos o jogador será atacado se estiver no mesmo _tile_ que um NPC
+hostil.
 
-Tal como o jogador, o NPC pode optar por gastar uma _turn_ a consumir comida
-caso a tenha e caso o seu HP esteja muito baixo.
-
-Caso o jogador vença o NPC (ou seja, caso o HP do NPC diminua até zero), o
-NPC desaparece do jogo, deixando para trás os itens que carregava (comida,
-armas e/ou ouro), que o jogador pode ou não apanhar.
+Caso o jogador vença o NPC (ou seja, caso o HP do NPC diminua até zero), o NPC
+desaparece do jogo, deixando para trás zero ou mais itens aleatórios, que o
+jogador pode ou não apanhar. Em níveis mais avançados, os NPCs deixam para trás
+menos itens.
 
 Se o NPC vencer o jogador (ou seja, caso o HP do jogador chegue a zero), o jogo
 termina.
+
+#### Armadilhas
+
+_a fazer_
 
 #### Fim do jogo
 
 O jogo pode terminar de duas formas:
 
 1. Quando o HP do jogador baixa até zero devido a cansaço (pois o jogador perde
-   1 HP por _turn_) ou devido a combate.
+   1 HP por _turn_), devido a combate ou devido a armadilhas.
 2. Quando o jogador seleciona a opção `Q`.
 
 Em qualquer dos casos, verifica-se se o nível atingido está entre os 10
-melhores, e em caso afirmativo, solicita-se ao jogador o seu nome para figurar
-na tabela de _high scores_.
+melhores, e em caso afirmativo, solicita-se ao jogador o seu nome para o mesmo
+figurar na tabela de _high scores_.
+
+### Geração procedimental dos níveis e outros eventos aleatórios
+
+_a fazer_
 
 ### Visualização do jogo
 
@@ -186,10 +190,10 @@ percentagem de ocupação do inventário.
 * Em cada _tile_ do mapa explorado devem ser diferenciáveis os vários elementos
 presentes (itens, NPCs, etc), até um máximo razoável.
 * Uma legenda, explicando o que é cada elemento no mapa.
-* Uma ou mais mensagens descrevendo o resultado da ação realizada na _turn_
-anterior.
+* Uma ou mais mensagens descrevendo o resultado das ações realizadas na _turn_
+  anterior por parte dos jogadores e dos _NPCs_ no _tile_ atual.
 * Descrição do que está no _tile_ atual, bem como nos _tiles_ na respetiva
-vizinhança de [Von Neumann].
+  vizinhança de [Von Neumann].
 * Indicação das ações realizáveis.
 
 Uma vez que o C# suporta nativamente a representação [Unicode], os respetivos
@@ -222,30 +226,30 @@ A [Figura 1](#fig1) mostra uma possível implementação da visualização do jo
 ~~~~~ ~~~~~ ☢¶✚.. ..... ..... ..... ⨀☿†.. EXIT!       ¶ - Neutral NPC
 ~~~~~ ~~~~~ ..... ..... ..... ..... ..... EXIT!       ☿ - Hostile NPC
                                                       ✚ - Food
-~~~~~ ~~~~~ ~~~~~ ~~~~~ ✚☢... ..... ☢$⍠.. ~~~~~       † - Weapon
+~~~~~ ~~~~~ ~~~~~ ~~~~~ ✚☢... ..... ☢⍠... ~~~~~       † - Weapon
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ..... ..... ..... ~~~~~       ☢ - Trap
-                                                      $ - Gold
-~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~       ⍠ - Map
+                                                      ⍠ - Map
+~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~
 
 Messages
 --------
 * You moved WEST
-* You were attacked by a demon and lost 5 HP
+* You were attacked by a Demon and lost 5 HP
 
 What do I see?
 --------------
 * NORTH : Empty
 * EAST  : Exit
 * WEST  : Empty
-* SOUTH : Trap, Gold (12)
-* HERE  : Neutral NPC, Weapon
+* SOUTH : Trap, Map
+* HERE  : NPC (Hostile Demon), Weapon (Shiny Sword)
 
 Options
 -------
-(W) Move NORTH      (A) Move WEST       (S) Move SOUTH    (D) Move EAST
-(F) Attack NPC      (T) Trade with NPC
-(E) Pick up item    (I) Inventory       (Q) Quit game
+(W) Move NORTH  (A) Move WEST    (S) Move SOUTH (D) Move EAST
+(F) Attack NPC  (E) Pick up item (U) Use item   (V) Drop item
+(Q) Quit game
 
 >
 ```
@@ -256,15 +260,7 @@ Options
 
 _A fazer_
 
-#### Ecrã de compra/venda (opção T)
-
-_A fazer_
-
-#### Ecrã de apanhar item (opção E)
-
-_A fazer_
-
-#### Ecrã de inventário (opção I)
+#### Ecrã de apanhar/usar/deixar cair item (opções E, U e V)
 
 _A fazer_
 
@@ -290,11 +286,13 @@ definida][SRP].
 ### Fases da implementação
 
 O jogo pode ser implementado incrementalmente em várias fases. Os projetos
-precisam de implementar pelo menos a Fase 1 para serem avaliados.
+precisam de implementar pelo menos a Fase 1 para serem avaliados. Atenção que a
+geração procedimental/aleatória dos elementos do jogo **obrigatória** em todas
+as fases de implementação.
 
 #### Fase 1
 
-Na fase 1 devem ser implementandos os seguintes pontos:
+Na fase 1 devem ser implementados os seguintes pontos:
 
 * Menu principal, com todas as opções a funcionar excepto _High Scores_.
 * Jogo:
@@ -303,8 +301,7 @@ Na fase 1 devem ser implementandos os seguintes pontos:
   * Jogador inicia jogo com HP igual a 100.
   * Jogador controlável com as teclas WASD, quando chega à _Exit_ termina o
     nível atual, começando um novo nível.
-  * Jogador perde 1 HP por cada _move_ no 1º nível, 2 HP por cada _move_ no 2º
-    nível, etc.
+  * Jogador perde 1 HP por cada _turn_.
   * Jogador morre quando HP chega a zero.
 
 A implementação completa desta fase equivale a 50% de cumprimento do
@@ -312,7 +309,7 @@ A implementação completa desta fase equivale a 50% de cumprimento do
 
 #### Fase 2
 
-Na fase 2 devem ser implementandos os seguintes pontos (além dos pontos
+Na fase 2 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
 * Implementação das partes exploradas e inexploradas do mapa. As partes
@@ -323,19 +320,31 @@ A implementação completa desta fase equivale a 60% de cumprimento do
 
 #### Fase 3
 
-Na fase 3 devem ser implementandos os seguintes pontos (além dos pontos
+Na fase 3 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-* Implementação de armadilhas: quando o jogador se move para um _tile_ que
-  contém uma armadilha, perde automaticamente o HP especificado para a
-  armadilha em questão.
+* Implementação dos mapas e da funcionalidade `(E) Pick up item` apenas para
+  mapas. Quando apanhados, os mapas revelam o nível na sua totalidade. Os mapas
+  não são guardados no inventário, desaparecendo do nível quando apanhados.
 
 A implementação completa desta fase equivale a 65% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 3.25).
 
 #### Fase 4
 
-Na fase 4 devem ser implementandos os seguintes pontos (além dos pontos
+Na fase 4 devem ser implementados os seguintes pontos (além dos pontos
+indicados nas fases anteriores):
+
+* Implementação de armadilhas: quando o jogador se move para um _tile_ que
+  contém uma armadilha, perde automaticamente o HP especificado para a
+  armadilha em questão.
+
+A implementação completa desta fase equivale a 70% de cumprimento do
+[objetivo **O1**](#objetivos) (nota máxima 3.5).
+
+#### Fase 5
+
+Na fase 5 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
 * Implementação dos _high scores_ usando ficheiros:
@@ -344,66 +353,54 @@ indicados nas fases anteriores):
   * Quando jogador morre, _score_ é guardado caso esteja entre os 10 melhores
     _high scores_.
 
-A implementação completa desta fase equivale a 70% de cumprimento do
-[objetivo **O1**](#objetivos) (nota máxima 3.5).
-
-#### Fase 5
-
-Na fase 5 devem ser implementandos os seguintes pontos (além dos pontos
-indicados nas fases anteriores):
-
-* Jogador tem inventário que permite guardar itens até um peso máximo
-  pré-determinado; implementação da funcionalidade `(I) Inventory`.
-* Implementação da funcionalidade `(E) Pick up item`.
-* Itens:
-  * Comida, armas e ouro: quando apanhados são guardados no inventário do
-    jogador, caso o mesmo ainda suporte o peso.
-  * Mapas: quando apanhados revelam o nível na sua totalidade; não são
-    guardados no inventário, mas tal como os restantes itens, desaparecem do
-    nível quando apanhados.
-
 A implementação completa desta fase equivale a 75% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 3.75).
 
 #### Fase 6
 
-Na fase 6 devem ser implementandos os seguintes pontos (além dos pontos
+Na fase 6 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-* O jogador pode equipar uma das armas que tem no seu inventário. A arma
-  equipada não conta para o peso total do inventário. A arma anteriormente
-  equipada é movida para o inventário, caso não ultrapasse o limite de peso do
-  mesmo.
+* Jogador tem inventário que permite guardar itens até um peso máximo
+  pré-determinado.
+* Implementação das funcionalidades `(E) Pick up item`, `(U) Use item` e
+  `(V) Drop item` para comida e armas. Quando este tipo de itens (comida e
+  armas) são apanhados, são guardados no inventário do jogador, caso o mesmo
+  ainda suporte o peso.
 
 A implementação completa desta fase equivale a 80% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4).
 
 #### Fase 7
 
-Na fase 7 devem ser implementandos os seguintes pontos (além dos pontos
+Na fase 7 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-* NPCs e combate passivo
+* O jogador pode equipar uma das armas que tem no seu inventário. A arma
+  equipada continua a contar para o peso total do inventário. A arma
+  anteriormente equipada é movida para o inventário.
 
 A implementação completa desta fase equivale a 85% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4.25).
 
 #### Fase 8
 
-Na fase 8 devem ser implementandos os seguintes pontos (além dos pontos
+Na fase 8 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-* NPCs e combate ativo
+* Implementação de NPCs.
+* Combate passivo: o jogador é atacado por NPCs hostis quando se move para
+  _tile_ onde os mesmos se encontrem.
 
 A implementação completa desta fase equivale a 90% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4.5).
 
 #### Fase 9
 
-Na fase 9 devem ser implementandos os seguintes pontos (além dos pontos
+Na fase 9 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-* NPCs e compra/venda de itens
+* Combate ativo: implementação da opção `(F) Attack NPC`.
 
 A implementação completa desta fase equivale a 95% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4.75).
