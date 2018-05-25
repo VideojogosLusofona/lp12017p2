@@ -13,11 +13,11 @@ work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 ## Descrição do problema
 
 Os alunos devem implementar um jogo _roguelike_ em C# com níveis
-[gerados procedimentalmente][GP] em grelhas 8x8. O jogador começa no lado
-esquerdo da grelha (1ª coluna), e o seu objetivo é encontrar a saída do nível,
-que se encontra do lado direito dessa mesma grelha (8ª coluna). Pelo meio o
-jogador pode encontrar NPCs (agressivos ou neutros), encontrar itens (comida,
-armas, mapas), possivelmente apanhando-os, e cair em armadilhas.
+[gerados procedimentalmente](#procedural) em grelhas 8x8. O jogador começa no
+lado esquerdo da grelha (1ª coluna), e o seu objetivo é encontrar a saída do
+nível, que se encontra do lado direito dessa mesma grelha (8ª coluna). Pelo
+meio o jogador pode encontrar NPCs (agressivos ou neutros), encontrar itens
+(comida, armas, mapas), possivelmente apanhando-os, e cair em armadilhas.
 
 Os níveis vão ficando progressivamente mais difíceis, com mais monstros, mais
 armadilhas e menos itens. O _score_ final do jogador é igual ao nível atingido,
@@ -160,7 +160,7 @@ termina.
 
 #### Armadilhas
 
-As armadilhas têm apenas uma característica:
+As armadilhas têm as seguintes características:
 
 * `Damage` - Valor máximo de HP que jogador pode perder se cair na armadilha.
 * `FallenInto` - Indica se o jogador já caiu na armadilha ou não.
@@ -189,9 +189,76 @@ figurar na tabela de _high scores_.
 
 <a name="procedural"></a>
 
-### Geração procedimental dos níveis e outros eventos aleatórios
+### Geração procedimental e aleatoriedade
+
+A [geração procedimental][GP] é uma peça fundamental na história dos Videojogos,
+tanto antigos como atuais. A [geração procedimental][GP] consiste na criação
+algorítmica e automática de dados, por oposição à criação manual dos mesmos. É
+usada nos Videojogos para criar grandes quantidades de conteúdo, promovendo a
+imprevisibilidade e a rejogabilidade dos jogos.
+
+#### Cara ou coroa com uma certa probabilidade
+
+O C# oferece a classe [Random][], que por sua vez tem vários métodos úteis para
+geração de números aleatórios. Para usarmos esta classe é primeiro necessário
+criar uma instância da mesma:
+
+```cs
+// Criar uma instância de Random usando como semente a hora atual do sistema
+// Para efeitos de debugging pode ser conveniente usar uma semente fixa
+Random rnd = new Random();
+```
+
+Um dos métodos úteis é o método [NextDouble()][], que retorna um `double` entre
+0 e 1. É possível "atirar a moeda ao ar" usando este método, por exemplo:
+
+```cs
+if (rnd.NextDouble() < 0.25)
+{
+    Console.WriteLine("Cara");
+}
+else
+{
+    Console.WriteLine("Coroa");
+}
+```
+
+No exemplo anterior definimos a probabilidade de sair "Cara" em 25% (e
+consequentemente, de sair "Coroa" em 75%). O mesmo tipo de código pode ser
+usado para determinar se a arma do jogador se estragou durante um ataque:
+
+```cs
+if (rnd.NextDouble() < 1 - weapon.Durability)
+{
+    // Arma estragou-se, removê-la do jogo
+}
+```
+
+O método [Next()][] tem vários _overloads_, um dos quais aceita um parâmetro
+`int` de nome `maxValue`, devolvendo um número aleatório inteiro no intervalo
+`[0, maxValue[`. Este método pode ser usado para ..._a fazer_
+
+#### Geração dos níveis
 
 _a fazer_
+
+NPCs:
+quantidade
+HP, attackpower
+
+Jogador e exit
+Armadilhas
+Itens
+Mapa
+
+#### Durante o jogo
+
+_a fazer_
+
+Combate: HP perdido entre 0 e attackpower
+Armadilhas: HP perdido entre 0 e Damage
+Probablidade de arma se partir
+Itens deixados pelo NPC qd morre
 
 <a name="visualize"></a>
 
@@ -616,6 +683,8 @@ Estruturas de Dados][aed] do [Instituto Superior Técnico][ist]_
 
 * <a name="ref1">\[1\]</a> Whitaker, R. B. (2016). The C# Player's Guide
   (3rd Edition). Starbound Software.
+* <a name="ref2">\[2\]</a> Procedural generation. (2018). Retrived May 25, 2018
+from https://en.wikipedia.org/wiki/Procedural_generation.
 
 ## Licenças
 
@@ -643,3 +712,6 @@ Este enunciado é disponibilizados através da licença [CC BY-NC-SA 4.0].
 [Von Neumann]:https://en.wikipedia.org/wiki/Von_Neumann_neighborhood
 [UTF-8]:https://en.wikipedia.org/wiki/UTF-8
 [Unicode]:https://en.wikipedia.org/wiki/Unicode
+[Random]:https://docs.microsoft.com/pt-pt/dotnet/api/system.random
+[NextDouble()]:https://docs.microsoft.com/pt-pt/dotnet/api/system.random.nextdouble
+[Next()]:https://docs.microsoft.com/pt-pt/dotnet/api/system.random.next
