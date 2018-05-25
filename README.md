@@ -86,11 +86,12 @@ Os NPCs têm as seguintes características:
 
 * `HP` (_hit points_) - Vida do NPC, semelhante à do jogador. Inicialmente os
   NPCs devem ter HPs relativamente pequenos, aumentando à medida que o jogo
-  progride para níveis mais difíceis. O HP inicial dos NPCs é aleatório.
+  progride para níveis mais difíceis. O HP inicial dos NPCs é
+  [aleatório](#procedural).
 * `AttackPower` - O máximo de HP que o NPC pode retirar ao jogador em cada
   ataque. Inicialmente os NPCs devem ter um `AttackPower` relativamente pequeno,
   aumentando à medida que o jogo progride para níveis mais difíceis. O
-  `AttackPower` de cada NPC é aleatório.
+  `AttackPower` de cada NPC é [aleatório](#procedural).
 * `State` - Estado do NPC, um de dois estados possíveis:
   * _Hostile_ - Ataca o jogador assim que o jogador se move para o respetivo
     _tile_.
@@ -114,8 +115,8 @@ Existem os seguintes itens em concreto:
   tipo diferente de arma tem um `AttackPower` e `Durability` específicos. O
   primeiro, inteiro entre 1 e 100, representa o máximo de HP que o jogador pode
   retirar ao NPC quando o ataca. A `Durability`, _float_ entre 0 e 1, representa
-  a probabilidade da arma não se estragar quando usada num ataque. As arma são
-  retiradas do jogo no momento em que se estragam.
+  a [probabilidade](#procedural) da arma não se estragar quando usada num
+  ataque. As arma são retiradas do jogo no momento em que se estragam.
 
 Os itens podem existir em qualquer _tile_ do nível (excepto `EXIT!`) bem como
 no inventário do jogador (e no caso das armas, serem equipadas pelo jogador).
@@ -131,16 +132,17 @@ apanhe o mapa, todas as partes inexploradas do nível são reveladas.
 
 Um NPC `Hostile` ataca o jogador quando este entra ou se mantém no _tile_ onde
 o NPC está presente. A quantidade de HP que o jogador perde é igual a um valor
-aleatório entre 0 e o `AttackPower` da arma equipada pelo NPC.
+[aleatório](#procedural) entre 0 e o `AttackPower` da arma equipada pelo NPC.
 
 O jogador pode atacar qualquer NPC presente no mesmo _tile_ selecionando a
 opção `F` e especificando qual o NPC a atacar. A quantidade de HP que o jogador
-retira ao NPC é igual a um valor aleatório entre 0 e o `AttackPower` da arma
-equipada. O jogador não pode atacar NPCs senão tiver uma arma equipada.
+retira ao NPC é igual a um valor [aleatório](#procedural) entre 0 e o
+`AttackPower` da arma equipada. O jogador não pode atacar NPCs senão tiver uma
+arma equipada.
 
-Quando é realizado um ataque pelo jogador, existe uma probabilidade igual a
-`1 - Durability` da arma equipada se partir. Neste caso a arma é removida das
-"mãos" do jogador e do jogo.
+Quando é realizado um ataque pelo jogador, existe uma
+[probabilidade](#procedural) igual a `1 - Durability` da arma equipada se
+partir. Neste caso a arma é removida das "mãos" do jogador e do jogo.
 
 Caso o jogador não tenha uma arma equipada, pode gastar uma _turn_ a equipar
 uma arma que tenha no inventário. O jogador pode ainda gastar uma _turn_ a
@@ -149,9 +151,9 @@ ambos os casos o jogador será atacado se estiver no mesmo _tile_ que um NPC
 hostil.
 
 Caso o jogador vença o NPC (ou seja, caso o HP do NPC diminua até zero), o NPC
-desaparece do jogo, deixando para trás zero ou mais itens aleatórios, que o
-jogador pode ou não apanhar. Em níveis mais avançados, os NPCs deixam para trás
-menos itens.
+desaparece do jogo, deixando para trás zero ou mais itens
+[aleatórios](#procedural), que o jogador pode ou não apanhar. Em níveis mais
+avançados, os NPCs deixam para trás menos itens.
 
 Se o NPC vencer o jogador (ou seja, caso o HP do jogador chegue a zero), o jogo
 termina.
@@ -168,9 +170,10 @@ específico para `Damage`. É possível inclusive existir mais do que uma
 armadilha por _tile_.
 
 Quando o jogador entra pela primeira vez num _tile_ com uma ou mais armadilhas,
-cada armadilha provoca uma perda aleatória de HP ao jogador entre 0 e `Damage`,
-e o respetivo estado `FallenInto` passa a `true`. Se o jogador voltar a entrar
-ou se passar mais _turns_ nesse _tile_, as armadilhas já não causam estragos.
+cada armadilha provoca uma perda [aleatória](#procedural) de HP ao jogador
+entre 0 e `Damage`, e o respetivo estado `FallenInto` passa a `true`. Se o
+jogador voltar a entrar ou se passar mais _turns_ nesse _tile_, as armadilhas
+já não causam estragos.
 
 #### Fim do jogo
 
@@ -184,9 +187,13 @@ Em qualquer dos casos, verifica-se se o nível atingido está entre os 10
 melhores, e em caso afirmativo, solicita-se ao jogador o seu nome para o mesmo
 figurar na tabela de _high scores_.
 
+<a name="procedural"></a>
+
 ### Geração procedimental dos níveis e outros eventos aleatórios
 
 _a fazer_
+
+<a name="visualize"></a>
 
 ### Visualização do jogo
 
@@ -198,9 +205,9 @@ O ecrã principal do jogo deve mostrar o seguinte:
 
 * Mapa do jogo, distiguindo claramente a parte explorada da parte inexplorada.
 * Estatísticas do jogador: nível atual, _hit points_ (HP), arma selecionada e
-percentagem de ocupação do inventário.
+  percentagem de ocupação do inventário.
 * Em cada _tile_ do mapa explorado devem ser diferenciáveis os vários elementos
-presentes (itens, NPCs, etc), até um máximo razoável.
+  presentes (itens, NPCs, etc), até um máximo razoável.
 * Uma legenda, explicando o que é cada elemento no mapa.
 * Uma ou mais mensagens descrevendo o resultado das ações realizadas na _turn_
   anterior por parte dos jogadores e dos _NPCs_ no _tile_ atual.
@@ -223,7 +230,7 @@ A [Figura 1](#fig1) mostra uma possível implementação da visualização do jo
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Player stats
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    ------------
                                                    HP        - 34
-☿.... ☢.... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Weapon    - Sword
+☿.... ☢.... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Weapon    - Rusty Sword
 ..... ..... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Inventory - 91% full
 
 ..... ..... ..... ..... ..... ~~~~~ ~~~~~ ~~~~~
@@ -274,7 +281,6 @@ A opção `F` pode ser utilizada quando existem NPCs no mesmo _tile_ do jogador.
 Deve ser mostrada uma mensagem de erro quando a opção `F` é selecionada e não
 existem NPCs no _tile_ onde o jogador se encontra. Caso existam NPCs no _tile_,
 deve ser apresentado um menu semelhante ao indicado na [Figura 2](#fig2).
-
 
 <a name="fig2"></a>
 
@@ -343,10 +349,17 @@ definida][SRP].
 
 ### Fases da implementação
 
-O jogo pode ser implementado incrementalmente em várias fases. Os projetos
+O jogo deve ser implementado incrementalmente em várias fases. Os projetos
 precisam de implementar pelo menos a Fase 1 para serem avaliados. Atenção que a
-geração procedimental/aleatória dos elementos do jogo **obrigatória** em todas
-as fases de implementação.
+[geração procedimental/aleatória](#procedural) dos elementos do jogo, bem como
+a [visualização](#visualize), são **obrigatórias** em todas as fases de
+implementação.
+
+Para fins de avaliação, a fase tida em conta é a anterior à fase mais baixa que
+ficou por implementar. Por exemplo, se o grupo implementar tudo até à fase 5,
+bem como as as fases 7 e 9, a fase tida em conta para a avaliação é a fase 5.
+Ou seja, é vantajoso seguir a ordem sugerida para as fases de implementação e
+não "saltar" fases.
 
 #### Fase 1
 
@@ -354,8 +367,8 @@ Na fase 1 devem ser implementados os seguintes pontos:
 
 * Menu principal, com todas as opções a funcionar excepto _High Scores_.
 * Jogo:
-  * Grelha do jogo contém apenas jogador e _Exit_, colocados aleatoriamente na
-    1ª e 8ª colunas da grelha, respetivamente.
+  * Grelha do jogo contém jogador e _Exit_, colocados
+    [aleatoriamente](#procedural) na 1ª e 8ª colunas da grelha, respetivamente.
   * Jogador inicia jogo com HP igual a 100.
   * Jogador controlável com as teclas WASD, quando chega à _Exit_ termina o
     nível atual, começando um novo nível.
@@ -394,8 +407,8 @@ Na fase 4 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
 * Implementação de armadilhas: quando o jogador se move para um _tile_ que
-  contém uma armadilha, perde automaticamente o HP especificado para a
-  armadilha em questão.
+  contém uma armadilha, perde HP entre 0 e o valor de `Damage` da armadilha em
+  questão.
 
 A implementação completa desta fase equivale a 70% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 3.5).
@@ -446,9 +459,9 @@ A implementação completa desta fase equivale a 85% de cumprimento do
 Na fase 8 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-* Implementação de NPCs.
-* Combate passivo: o jogador é atacado por NPCs hostis quando se move para
-  _tile_ onde os mesmos se encontrem.
+* Implementação de NPCs com as características pedidas. Os NPCs existem no jogo
+  e aparecem na visualização, mas não interferem, não atacam o jogador e não
+  podem ser atacados.
 
 A implementação completa desta fase equivale a 90% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4.5).
@@ -458,24 +471,25 @@ A implementação completa desta fase equivale a 90% de cumprimento do
 Na fase 9 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-* Combate ativo: implementação da opção `(F) Attack NPC`.
+* Combate passivo: o jogador é atacado por NPCs hostis quando se move para
+  _tile_ onde os mesmos se encontrem.
 
 A implementação completa desta fase equivale a 95% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4.75).
 
 #### Fase 10
 
-Na fase 10 devem ser implementandos os seguintes pontos (além dos pontos
+Na fase 10 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-* _a fazer_
+* Combate ativo: implementação da opção `(F) Attack NPC`.
 
 A implementação completa desta fase equivale a 100% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 5).
 
 #### Fase extra
 
-Na fase extra devem ser implementandos os seguintes pontos (além dos pontos
+Na fase extra devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
 * Implementação de _save games_, com opção extra no menu principal de _load
