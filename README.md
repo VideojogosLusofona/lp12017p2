@@ -158,7 +158,19 @@ termina.
 
 #### Armadilhas
 
-_a fazer_
+As armadilhas têm apenas uma característica:
+
+* `Damage` - Valor máximo de HP que jogador pode perder se cair na armadilha.
+* `FallenInto` - Indica se o jogador já caiu na armadilha ou não.
+
+Podem existir diferentes tipos de armadilha no jogo, cada uma com um valor
+específico para `Damage`. É possível inclusive existir mais do que uma
+armadilha por _tile_.
+
+Quando o jogador entra pela primeira vez num _tile_ com uma ou mais armadilhas,
+cada armadilha provoca uma perda aleatória de HP ao jogador entre 0 e `Damage`,
+e o respetivo estado `FallenInto` passa a `true`. Se o jogador voltar a entrar
+ou se passar mais _turns_ nesse _tile_, as armadilhas já não causam estragos.
 
 #### Fim do jogo
 
@@ -242,7 +254,7 @@ What do I see?
 * NORTH : Empty
 * EAST  : Exit
 * WEST  : Empty
-* SOUTH : Trap, Map
+* SOUTH : Trap (Hell Pit), Map
 * HERE  : NPC (Hostile Demon), Weapon (Shiny Sword)
 
 Options
