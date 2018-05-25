@@ -270,15 +270,61 @@ Options
 
 #### Ecrã de ataque (opção F)
 
-_A fazer_
+A opção `F` pode ser utilizada quando existem NPCs no mesmo _tile_ do jogador.
+Deve ser mostrada uma mensagem de erro quando a opção `F` é selecionada e não
+existem NPCs no _tile_ onde o jogador se encontra. Caso existam NPCs no _tile_,
+deve ser apresentado um menu semelhante ao indicado na [Figura 2](#fig2).
+
+
+<a name="fig2"></a>
+
+```
+Select NPC to attack
+--------------------
+
+0. Go back
+1. Demon (hostile)
+2. Monk (neutral)
+3. Orc (hostile)
+
+>
+```
+
+**Figura 2** - Possível menu para seleção de NPC para atacar.
 
 #### Ecrã de apanhar/usar/deixar cair item (opções E, U e V)
 
-_A fazer_
+A opção `E` pode ser utilizada quando existem NPCs no mesmo _tile_ do jogador.
+Deve ser mostrada uma mensagem de erro quando a opção `E` é selecionada e não
+existem itens no _tile_ onde o jogador se encontra.
+
+As opções `U` e `V` podem ser utilizadas quando existem itens no inventário do
+jogador. Deve ser mostrada uma mensagem de erro quando uma destas opções é
+selecionada e não existem itens no inventário do jogador.
+
+Caso existam itens no inventário deve ser apresentado um menu semelhante ao
+indicado na [Figura 3](#fig3).
+
+<a name="fig3"></a>
+
+```
+Select item to XXXX
+-------------------
+
+0. Go back
+1. Weapon (Cursed Dagger)
+2. Food (Apple)
+
+>
+```
+
+**Figura 3** - Possível menu para seleção de item. `XXXX` deve ser substituído
+por `pick up`, `use` ou `drop`, dependendo da opção escolhida.
 
 #### Ecrã de terminação do jogo (opção Q)
 
-_A fazer_
+Quando a opção `Q` é selecionada deve ser apresentada uma pergunta de
+confirmação do género `Do you really want to quit? (y/n)`.
 
 ## Implementação
 
