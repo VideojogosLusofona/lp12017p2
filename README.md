@@ -127,8 +127,9 @@ um combate com o jogador.
 
 #### Mapas
 
-Existe um mapa por nível, colocado aleatoriamente num _tile_. Caso o jogador
-apanhe o mapa, todas as partes inexploradas do nível são reveladas.
+Existe um mapa por nível, colocado [aleatoriamente](#procedural) num _tile_.
+Caso o jogador apanhe o mapa, todas as partes inexploradas do nível são
+reveladas.
 
 #### Combate
 
@@ -196,15 +197,21 @@ figurar na tabela de _high scores_.
 À medida que o jogo avança, os níveis vão ficando mais difíceis. Mais
 concretamente, à medida que o jogo avança:
 
-* Devem tendencialmente existir mais NPCs, embora nunca ultrapassando um número
-  máximo definido pelos alunos, e para os NPCs existentes:
+* Relativamente aos NPCs:
+  * Devem tendencialmente existir em maior número, nunca ultrapassando um
+    número máximo definido pelos alunos.
   * A proporção de _Hostiles_/_Neutral_ deve ir aumentando.
   * O `HP` e `AttackPower` devem ser cada vez maiores (mas nunca ultrapassando
     o máximo, 100).
-* Devem existir cada vez mais armadilhas (nunca ultrapassando um número máximo
+* Devem existir cada vez mais armadilhas (nunca ultrapassando o número máximo
   definido pelos alunos).
 * Devem existir cada vez menos itens (comida e armas) disponíveis para o
-  jogador apanhar.
+  jogador apanhar, mas sem nunca baixar de um número mínimo definido pelos
+  alunos.
+
+Na secção [Geração procedimental e aleatoriedade](#procedural) são apresentadas
+algumas sugestões de como gerar infinitamente níveis com dificuldade cada vez
+maior.
 
 <a name="procedural"></a>
 
@@ -215,6 +222,30 @@ tanto antigos como atuais. A [geração procedimental][GP] consiste na criação
 algorítmica e automática de dados, por oposição à criação manual dos mesmos. É
 usada nos Videojogos para criar grandes quantidades de conteúdo, promovendo a
 imprevisibilidade e a rejogabilidade dos jogos.
+
+#### Uso do gerador de números aleatórios do C# para geração procedimental
+
+<!--
+
+### Geração de níveis
+
+NPCs:
+quantidade
+HP, attackpower
+
+Jogador e exit
+Armadilhas
+Itens
+Mapa
+
+#### Durante o jogo
+
+Combate: HP perdido entre 0 e attackpower
+Armadilhas: HP perdido entre 0 e Damage
+Probablidade de arma se partir
+Itens deixados pelo NPC qd morre
+
+-->
 
 O C# oferece a classe [Random][] para geração de números aleatórios, que por
 sua vez tem vários métodos úteis para o efeito. Para usarmos esta classe é
@@ -251,64 +282,88 @@ if (rnd.NextDouble() < 1 - weapon.Durability)
 }
 ```
 
-<!--O método [NextDouble()][] pode ainda ser usado para determinar o `HP` inicial e
-o `AttackPower` dos NPCs, bastando multiplicar o seu valor de retorno por 100
-(pois ambas as propriedades podem variar entre 0 e 100).
-No caso do `State`
-pode ser usado o método [NextDouble()][] ou um dos _overloads_ do método
-[Next()][] que retorna um valor entre zero e o número especificado menos um:
+O HP a ser subtraído devido a ataque ou armadilhas também pode ser determinado
+com o método [NextDouble()][], multiplicando o valor retornado pelo possível
+máximo em questão. Por exemplo::
 
-// Em alternativa à linha anterior, supondo que na enumeração NPCState o estado
-// Neutral corresponde a zero e o estado Hostile corresponde a um
-State = (NPCState)rnd.Next(2);
--->
+```cs
+// Valor de HP a subtrair num ataque, será no máximo igual a AttackPower
+double damage = Random.NextDouble() * weapon.AttackPower;
+```
+
+```cs
+// Valor de HP a subtrair devido a armadilha, será no máximo igual a MaxDamage
+double damage = Random.NextDouble() * trap.MaxDamage;
+```
 
 O método [NextDouble()][] pode ainda ser usado para determinar o `HP` inicial,
 o `AttackPower` e o `State` dos NPCs. No caso das duas primeiras
 características, basta multiplicar o valor de retorno de [NextDouble()][] por
 100, pois ambas as propriedades podem variar entre 0 e 100. No caso do `State`,
 que pode ter apenas dois valores discretos, usamos um cálculo de probabilidade
-como fizemos no exemplo "cara ou coroa":
+como fizemos no exemplo "cara ou coroa".
+
+A classe [Random][] disponibiliza também três versões (_overloads_) do método
+[Next()][], úteis para obter números inteiros aleatórios:
+
+* `Next()` - Retorna um inteiro aleatório não-negativo.
+* `Next(int b)` - Retorna um inteiro aleatório no intervalo `[0, b[`.
+* `Next(int a, int b)` - Retorna um inteiro aleatório no intervalo `[a, b[`.
+
+Este método é apropriado para determinar a quantidade inicial de NPCs, itens e
+armadilhas, o número de itens deixados para trás por um NPC quando morre, bem
+como a posição inicial do jogador, da saída e do mapa.
+
+O seguinte código exemplifica uma possível forma de criar os NPCs para um novo
+nível (atenção que o código é meramente exemplificativo):
 
 ```cs
-// Assumindo que: a) estamos no construtor do NPC; b) que as características
-// dos NPCs estão implementadas como propriedades (pode não ser o caso); e, c)
-// o estado dos NPCs é definido numa enumeração NPCState.
+// Quantidade inicial de NPCs no nível
+int numberOfNPCs = rnd.Next(maxNPCsForThisLevel);
 
-// Determinar HP inicial do NPC
-HP = rnd.NextDouble() * 100;
-// Determinar AttackPower do NPC
-AttackPower = rnd.NextDouble() * 100;
-// Determinar State do NPC
-State = rnd.NextDouble() < 0.5 ? NPCState.Neutral : NPCState.Hostile;
+// Criar cada um dos NPCs
+for (int i = 0; i < numberOfNPCs; i++)
+{
+    // Determinar HP inicial do NPC
+    double hp = rnd.NextDouble() * maxHPForThisLevel;
+    // Determinar AttackPower do NPC
+    double attackPower = rnd.NextDouble() * maxAPForThisLevel;
+    // Determinar State do NPC
+    NPCState state = rnd.NextDouble() < hostileProbabilityForThisLevel
+        ? NPCState.Hostile
+        : NPCState.Neutral;
+
+    // Determinar posição do NPC
+    int row = rnd.Next(8); // Boa ideia se 8 for uma constante tipo levelRows
+    int col = rnd.Next(8); // Boa ideia se 8 for uma constante tipo levelCols
+
+    // Criar NPC
+    NPC npc = new NPC(hp, attackPower, state);
+
+    // Adicionar NPC ao nível
+    level[row, col].Add(npc);
+}
 ```
 
-No entanto, o código anterior não tem em conta a dificuldade do nível atual,
-pois assume-se que `HP` e `AttackPower` podem ser, com a mesma probabilidade,
-1, 10 ou 100. A mesma coisa para `State`, que pode ser _Neutral_ ou _Hostile_
-com a mesma probabilidade.
+O código anterior assume que as variáveis `maxNPCsForThisLevel`,
+`maxHPForThisLevel`, `maxAPForThisLevel` e `hostileProbabilityForThisLevel` já
+existem. Estas variáveis devem ir aumentando de valor à medida que o jogador
+vai passando os níveis, até um máximo pré-definido pelos alunos. A forma mais
+simples seria usar uma função linear:
 
-#### Geração dos níveis
+_A fazer: mostrar figura com função linear_
 
-_a fazer_
+No entanto, a partir de certo nível a dificuldade não aumentaria mais. É
+preferível usar outro tipo de função, como por exemplo a [função logística][]:
 
-NPCs:
-quantidade
-HP, attackpower
+_A fazer: mostrar figura com função logística_
 
-Jogador e exit
-Armadilhas
-Itens
-Mapa
+É possível definir a forma da função logística com a manipulação dos
+parâmetros _L_, _k_ e _x<sub>0</sub>_, que definem respetivamente o máximo da
+função, a inclinação e o valor de _x_ correspondente ao valor central da
+função.
 
-#### Durante o jogo
-
-_a fazer_
-
-Combate: HP perdido entre 0 e attackpower
-Armadilhas: HP perdido entre 0 e Damage
-Probablidade de arma se partir
-Itens deixados pelo NPC qd morre
+_A fazer: dar exemplo para maxNPCsForThisLevel_
 
 <a name="visualize"></a>
 
@@ -811,3 +866,4 @@ Este enunciado é disponibilizados através da licença [CC BY-NC-SA 4.0].
 [Random]:https://docs.microsoft.com/pt-pt/dotnet/api/system.random
 [NextDouble()]:https://docs.microsoft.com/pt-pt/dotnet/api/system.random.nextdouble
 [Next()]:https://docs.microsoft.com/pt-pt/dotnet/api/system.random.next
+[função logística]:https://en.wikipedia.org/wiki/Logistic_function
