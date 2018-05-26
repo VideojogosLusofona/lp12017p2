@@ -55,7 +55,9 @@ As ações disponíveis em cada _turn_ são as seguintes:
     exista uma arma equipada anteriormente, a mesma passa para o inventário.
   * No caso de comida, a mesma é consumida, aumentando o HP na quantidade
     especificada para a comida em questão, até um máximo de 100.
-* `V` para deixar cair um item (arma ou comida ou ouro) no _tile_ atual.
+* `V` para deixar cair um item (arma ou comida) no _tile_ atual.
+* `I` para mostrar informação acerca dos itens (armas e comida) e armadilhas
+  disponíveis no jogo. Esta opção **não** consome uma _turn_.
 * `Q` para terminar o jogo.
 
 As opções `F`, `E`, `U` e `V` devem ser seguidas de um número, indicando qual o
@@ -87,11 +89,12 @@ Os NPCs têm as seguintes características:
 * `HP` (_hit points_) - Vida do NPC, semelhante à do jogador. Inicialmente os
   NPCs devem ter HPs relativamente pequenos, aumentando à medida que o jogo
   progride para níveis mais difíceis. O HP inicial dos NPCs é
-  [aleatório](#procedural).
+  [aleatório](#procedural), mas nunca ultrapassando o valor 100.
 * `AttackPower` - O máximo de HP que o NPC pode retirar ao jogador em cada
   ataque. Inicialmente os NPCs devem ter um `AttackPower` relativamente pequeno,
   aumentando à medida que o jogo progride para níveis mais difíceis. O
-  `AttackPower` de cada NPC é [aleatório](#procedural).
+  `AttackPower` de cada NPC é [aleatório](#procedural), mas nunca ultrapassando
+  o valor 100.
 * `State` - Estado do NPC, um de dois estados possíveis:
   * _Hostile_ - Ataca o jogador assim que o jogador se move para o respetivo
     _tile_.
@@ -101,22 +104,21 @@ Os NPCs têm as seguintes características:
 
 #### Itens
 
-Todos os itens têm as seguintes características:
+Todos os itens têm a seguinte característica:
 
 * `Weight` - Peso do item.
-* `Value` - Valor do item.
 
 Existem os seguintes itens em concreto:
 
 * Comida - Podem existir diferentes tipos de comida, à escolha dos alunos. Cada
-  tipo diferente de comida fornece ao jogador um HP pré-definido (`HPIncrease`)
-  quando usado.
+  tipo diferente de comida fornece ao jogador um HP pré-definido
+  (`HPIncrease`), que não pode ultrapassar o valor 100, quando usado.
 * Armas - Podem existir diferentes tipos de armas, à escolha dos alunos. Cada
   tipo diferente de arma tem um `AttackPower` e `Durability` específicos. O
-  primeiro, inteiro entre 1 e 100, representa o máximo de HP que o jogador pode
-  retirar ao NPC quando o ataca. A `Durability`, _float_ entre 0 e 1, representa
+  primeiro, valor entre 1 e 100, representa o máximo de HP que o jogador pode
+  retirar ao NPC quando o ataca. A `Durability`, valor entre 0 e 1, representa
   a [probabilidade](#procedural) da arma não se estragar quando usada num
-  ataque. As arma são retiradas do jogo no momento em que se estragam.
+  ataque. As armas são retiradas do jogo no momento em que se estragam.
 
 Os itens podem existir em qualquer _tile_ do nível (excepto `EXIT!`) bem como
 no inventário do jogador (e no caso das armas, serem equipadas pelo jogador).
@@ -152,8 +154,9 @@ hostil.
 
 Caso o jogador vença o NPC (ou seja, caso o HP do NPC diminua até zero), o NPC
 desaparece do jogo, deixando para trás zero ou mais itens
-[aleatórios](#procedural), que o jogador pode ou não apanhar. Em níveis mais
-avançados, os NPCs deixam para trás menos itens.
+[aleatórios](#procedural), que o jogador pode ou não apanhar. O número e
+qualidade dos itens deixados para trás pelo NPC **não** varia com a dificuldade
+do nível.
 
 Se o NPC vencer o jogador (ou seja, caso o HP do jogador chegue a zero), o jogo
 termina.
@@ -162,16 +165,17 @@ termina.
 
 As armadilhas têm as seguintes características:
 
-* `Damage` - Valor máximo de HP que jogador pode perder se cair na armadilha.
+* `MaxDamage` - Valor máximo de HP que jogador pode perder se cair na armadilha.
+  Pode no máximo ter o valor 100.
 * `FallenInto` - Indica se o jogador já caiu na armadilha ou não.
 
 Podem existir diferentes tipos de armadilha no jogo, cada uma com um valor
-específico para `Damage`. É possível inclusive existir mais do que uma
+específico para `MaxDamage`. É possível inclusive existir mais do que uma
 armadilha por _tile_.
 
 Quando o jogador entra pela primeira vez num _tile_ com uma ou mais armadilhas,
 cada armadilha provoca uma perda [aleatória](#procedural) de HP ao jogador
-entre 0 e `Damage`, e o respetivo estado `FallenInto` passa a `true`. Se o
+entre 0 e `MaxDamage`, e o respetivo estado `FallenInto` passa a `true`. Se o
 jogador voltar a entrar ou se passar mais _turns_ nesse _tile_, as armadilhas
 já não causam estragos.
 
@@ -187,6 +191,21 @@ Em qualquer dos casos, verifica-se se o nível atingido está entre os 10
 melhores, e em caso afirmativo, solicita-se ao jogador o seu nome para o mesmo
 figurar na tabela de _high scores_.
 
+#### Níveis e dificuldade
+
+À medida que o jogo avança, os níveis vão ficando mais difíceis. Mais
+concretamente, à medida que o jogo avança:
+
+* Devem tendencialmente existir mais NPCs, embora nunca ultrapassando um número
+  máximo definido pelos alunos, e para os NPCs existentes:
+  * A proporção de _Hostiles_/_Neutral_ deve ir aumentando.
+  * O `HP` e `AttackPower` devem ser cada vez maiores (mas nunca ultrapassando
+    o máximo, 100).
+* Devem existir cada vez mais armadilhas (nunca ultrapassando um número máximo
+  definido pelos alunos).
+* Devem existir cada vez menos itens (comida e armas) disponíveis para o
+  jogador apanhar.
+
 <a name="procedural"></a>
 
 ### Geração procedimental e aleatoriedade
@@ -197,11 +216,9 @@ algorítmica e automática de dados, por oposição à criação manual dos mesm
 usada nos Videojogos para criar grandes quantidades de conteúdo, promovendo a
 imprevisibilidade e a rejogabilidade dos jogos.
 
-#### Cara ou coroa com uma certa probabilidade
-
-O C# oferece a classe [Random][], que por sua vez tem vários métodos úteis para
-geração de números aleatórios. Para usarmos esta classe é primeiro necessário
-criar uma instância da mesma:
+O C# oferece a classe [Random][] para geração de números aleatórios, que por
+sua vez tem vários métodos úteis para o efeito. Para usarmos esta classe é
+primeiro necessário criar uma instância da mesma:
 
 ```cs
 // Criar uma instância de Random usando como semente a hora atual do sistema
@@ -230,13 +247,46 @@ usado para determinar se a arma do jogador se estragou durante um ataque:
 ```cs
 if (rnd.NextDouble() < 1 - weapon.Durability)
 {
-    // Arma estragou-se, removê-la do jogo
+    // Arma estragou-se, fazer qualquer coisa sobre isso
 }
 ```
 
-O método [Next()][] tem vários _overloads_, um dos quais aceita um parâmetro
-`int` de nome `maxValue`, devolvendo um número aleatório inteiro no intervalo
-`[0, maxValue[`. Este método pode ser usado para ..._a fazer_
+<!--O método [NextDouble()][] pode ainda ser usado para determinar o `HP` inicial e
+o `AttackPower` dos NPCs, bastando multiplicar o seu valor de retorno por 100
+(pois ambas as propriedades podem variar entre 0 e 100).
+No caso do `State`
+pode ser usado o método [NextDouble()][] ou um dos _overloads_ do método
+[Next()][] que retorna um valor entre zero e o número especificado menos um:
+
+// Em alternativa à linha anterior, supondo que na enumeração NPCState o estado
+// Neutral corresponde a zero e o estado Hostile corresponde a um
+State = (NPCState)rnd.Next(2);
+-->
+
+O método [NextDouble()][] pode ainda ser usado para determinar o `HP` inicial,
+o `AttackPower` e o `State` dos NPCs. No caso das duas primeiras
+características, basta multiplicar o valor de retorno de [NextDouble()][] por
+100, pois ambas as propriedades podem variar entre 0 e 100. No caso do `State`,
+que pode ter apenas dois valores discretos, usamos um cálculo de probabilidade
+como fizemos no exemplo "cara ou coroa":
+
+```cs
+// Assumindo que: a) estamos no construtor do NPC; b) que as características
+// dos NPCs estão implementadas como propriedades (pode não ser o caso); e, c)
+// o estado dos NPCs é definido numa enumeração NPCState.
+
+// Determinar HP inicial do NPC
+HP = rnd.NextDouble() * 100;
+// Determinar AttackPower do NPC
+AttackPower = rnd.NextDouble() * 100;
+// Determinar State do NPC
+State = rnd.NextDouble() < 0.5 ? NPCState.Neutral : NPCState.Hostile;
+```
+
+No entanto, o código anterior não tem em conta a dificuldade do nível atual,
+pois assume-se que `HP` e `AttackPower` podem ser, com a mesma probabilidade,
+1, 10 ou 100. A mesma coisa para `State`, que pode ser _Neutral_ ou _Hostile_
+com a mesma probabilidade.
 
 #### Geração dos níveis
 
@@ -321,7 +371,7 @@ A [Figura 1](#fig1) mostra uma possível implementação da visualização do jo
 Messages
 --------
 * You moved WEST
-* You were attacked by a Demon and lost 5 HP
+* You were attacked by an NPC and lost 5.3 HP
 
 What do I see?
 --------------
@@ -329,13 +379,13 @@ What do I see?
 * EAST  : Exit
 * WEST  : Empty
 * SOUTH : Trap (Hell Pit), Map
-* HERE  : NPC (Hostile Demon), Weapon (Shiny Sword)
+* HERE  : NPC (Hostile, HP=14.2, AP= 8.5), Weapon (Shiny Sword)
 
 Options
 -------
 (W) Move NORTH  (A) Move WEST    (S) Move SOUTH (D) Move EAST
 (F) Attack NPC  (E) Pick up item (U) Use item   (V) Drop item
-(Q) Quit game
+(I) Information (Q) Quit game
 
 >
 ```
@@ -356,9 +406,9 @@ Select NPC to attack
 --------------------
 
 0. Go back
-1. Demon (hostile)
-2. Monk (neutral)
-3. Orc (hostile)
+1. Hostile, HP=19.7, AP= 3.0
+2. Neutral, HP=62.1, AP=22.8
+3. Hostile, HP=31.9, AP= 9.3
 
 >
 ```
@@ -393,6 +443,48 @@ Select item to XXXX
 
 **Figura 3** - Possível menu para seleção de item. `XXXX` deve ser substituído
 por `pick up`, `use` ou `drop`, dependendo da opção escolhida.
+
+#### Ecrã de informação (opção I)
+
+Este ecrã aparece quando é selecionada a opção `I`, mostrando informação sobre
+os diferentes itens e armadilhas existentes no jogo. O jogador deve pressionar
+ENTER ou qualquer tecla para voltar ao ecrã principal, que deve ser redesenhado.
+O uso desta opção **não** gasta uma _turn_. A [Figura 4](#fig4) mostra um
+possível ecrã de informação (os itens e armadilhas apresentadas são meramente
+exemplificativos).
+
+<a name="fig4"></a>
+
+```
+Food             HPIncrease      Weight
+---------------------------------------
+Apple                    +4         0.5
+Eggs                     +5         0.6
+Fish                    +10         1.0
+Meat                    +10         1.2
+Water                    +2         0.8
+
+Weapon          AttackPower      Weight     Durability
+------------------------------------------------------
+Shiny Sword            10.0         3.0           0.90
+Rusty Sword            10.0         3.0           0.60
+Shiny Dagger            5.0         1.0           0.95
+Cursed Dagger          12.0         1.0           0.20
+Power Axe              18.0         8.0           0.92
+Heavy Mace             16.0         7.0           0.96
+Chainsaw               40.0        20.0           0.50
+
+Trap              MaxDamage
+---------------------------
+Hell Pit                -10
+Sharp Spikes            -15
+Banana Peel              -3
+Bear Trap                -8
+Bottomless Chasm        -30
+```
+
+**Figura 4** - Possível ecrã de informação (os itens e armadilhas apresentadas
+são meramente exemplificativos).
 
 #### Ecrã de terminação do jogo (opção Q)
 
@@ -474,8 +566,10 @@ Na fase 4 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
 * Implementação de armadilhas: quando o jogador se move para um _tile_ que
-  contém uma armadilha, perde HP entre 0 e o valor de `Damage` da armadilha em
-  questão.
+  contém uma armadilha, perde HP entre 0 e o valor de `MaxDamage` da armadilha
+  em questão.
+* Implementação da opção `(I) Information`, que apresenta informação acerca dos
+  diferentes tipos de armadilha no jogo.
 
 A implementação completa desta fase equivale a 70% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 3.5).
@@ -505,6 +599,8 @@ indicados nas fases anteriores):
   `(V) Drop item` para comida e armas. Quando este tipo de itens (comida e
   armas) são apanhados, são guardados no inventário do jogador, caso o mesmo
   ainda suporte o peso.
+* Atualização da opção `(I) Information` de modo a mostrar informação acerca
+  dos diferentes itens existentes no jogo.
 
 A implementação completa desta fase equivale a 80% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4).
