@@ -349,37 +349,15 @@ O código anterior assume que as variáveis `maxNPCsForThisLevel`,
 `maxHPForThisLevel`, `maxAPForThisLevel` e `hostileProbabilityForThisLevel` já
 existem. Estas variáveis devem ir aumentando de valor à medida que o jogador
 vai passando os níveis, até um máximo pré-definido pelos alunos. A forma mais
-simples seria usar uma [função linear por troços][], representada pela seguinte
-função:
-
-![linearfunc](https://user-images.githubusercontent.com/3018963/40623044-bda58006-629c-11e8-9bda-cedee67e7f39.png)
-
-A
-
-<a name="fig1"></a>
-![linear](https://user-images.githubusercontent.com/3018963/40620810-279be3ca-6292-11e8-9cf8-bd584a24d884.png)
-**Figura 1** - Representação gráfica de uma possível
-[função linear por troços][] para determinar `maxNPCsForThisLevel`.
-
-
-
-No entanto, a partir de certo nível a dificuldade não aumentaria mais. É
-preferível usar outro tipo de função, como por exemplo a [função logística][]:
-
-![logisticfunc](https://user-images.githubusercontent.com/3018963/40623165-5dd8c394-629d-11e8-9ee7-169a30fe2230.png)
-
-<a name="fig2"></a>
-![logistic](https://user-images.githubusercontent.com/3018963/40620812-27f27ec4-6292-11e8-9dcd-81062b9d1b3a.png)
-**Figura 2** - Representação gráfica de uma possível
-[função logística][] para determinar `maxNPCsForThisLevel`.
-
-
-É possível definir a forma da função logística com a manipulação dos
-parâmetros _L_, _k_ e _x<sub>0</sub>_, que definem respetivamente o máximo da
-função, a inclinação e o valor de _x_ correspondente ao valor central da
-função.
-
-_A fazer: dar exemplo para maxNPCsForThisLevel_
+simples consiste em usar uma [função][funções] para relacionar a variável
+desejada (*y*) com o nível atual do jogo (*x*). Algumas funções apropriadas
+para o efeito são a [função linear][], a [função linear por troços][], a
+[função logística][] ou a [função logarítmica][]. No site disponibilizado
+através deste [link][funções], é possível manipular os diferentes parâmetros
+das várias funções de modo a visualizar como as mesmas podem relacionar o nível
+atual (*x*) com o valor de saída desejado (*y*). É também disponibilizada
+[aqui](ProcGenFunctions.cs) uma classe _static_ com as várias funções
+sugeridas.
 
 <a name="visualize"></a>
 
@@ -884,3 +862,6 @@ Este enunciado é disponibilizados através da licença [CC BY-NC-SA 4.0].
 [Next()]:https://docs.microsoft.com/pt-pt/dotnet/api/system.random.next
 [função logística]:https://en.wikipedia.org/wiki/Logistic_function
 [função linear por troços]:https://en.wikipedia.org/wiki/Piecewise_linear_function
+[função logarítmica]:https://en.wikipedia.org/wiki/Logarithm#Logarithmic_function
+[função linear]:https://en.wikipedia.org/wiki/Linear_function_(calculus)
+[funções]:https://www.desmos.com/calculator/x5nmemnwsu
