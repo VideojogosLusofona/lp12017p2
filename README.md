@@ -349,14 +349,30 @@ O código anterior assume que as variáveis `maxNPCsForThisLevel`,
 `maxHPForThisLevel`, `maxAPForThisLevel` e `hostileProbabilityForThisLevel` já
 existem. Estas variáveis devem ir aumentando de valor à medida que o jogador
 vai passando os níveis, até um máximo pré-definido pelos alunos. A forma mais
-simples seria usar uma função linear:
+simples seria usar uma [função linear por troços][], representada pela seguinte
+função:
 
-_A fazer: mostrar figura com função linear_
+![linearfunc](https://user-images.githubusercontent.com/3018963/40623044-bda58006-629c-11e8-9bda-cedee67e7f39.png)
+
+A
+
+<a name="fig1"></a>
+![linear](https://user-images.githubusercontent.com/3018963/40620810-279be3ca-6292-11e8-9cf8-bd584a24d884.png)
+**Figura 1** - Representação gráfica de uma possível
+[função linear por troços][] para determinar `maxNPCsForThisLevel`.
+
+
 
 No entanto, a partir de certo nível a dificuldade não aumentaria mais. É
 preferível usar outro tipo de função, como por exemplo a [função logística][]:
 
-_A fazer: mostrar figura com função logística_
+![logisticfunc](https://user-images.githubusercontent.com/3018963/40623165-5dd8c394-629d-11e8-9ee7-169a30fe2230.png)
+
+<a name="fig2"></a>
+![logistic](https://user-images.githubusercontent.com/3018963/40620812-27f27ec4-6292-11e8-9dcd-81062b9d1b3a.png)
+**Figura 2** - Representação gráfica de uma possível
+[função logística][] para determinar `maxNPCsForThisLevel`.
+
 
 É possível definir a forma da função logística com a manipulação dos
 parâmetros _L_, _k_ e _x<sub>0</sub>_, que definem respetivamente o máximo da
@@ -392,9 +408,9 @@ caracteres podem e devem ser usados para melhorar a visualização do jogo. Para
 o efeito deve ser incluída a instrução `Console.OutputEncoding = Encoding.UTF8;`
 no método `Main()` (é necessário usar o _namespace_ `System.Text`).
 
-A [Figura 1](#fig1) mostra uma possível implementação da visualização do jogo.
+A [Figura 3](#fig3) mostra uma possível implementação da visualização do jogo.
 
-<a name="fig1"></a>
+<a name="fig3"></a>
 
 ```
 +++++++++++++++++++++++++++ LP1 Rogue : Level 009 +++++++++++++++++++++++++++
@@ -445,16 +461,16 @@ Options
 >
 ```
 
-**Figura 1** - Possível implementação da visualização do jogo (ecrã principal).
+**Figura 3** - Possível implementação da visualização do jogo (ecrã principal).
 
 #### Ecrã de ataque (opção F)
 
 A opção `F` pode ser utilizada quando existem NPCs no mesmo _tile_ do jogador.
 Deve ser mostrada uma mensagem de erro quando a opção `F` é selecionada e não
 existem NPCs no _tile_ onde o jogador se encontra. Caso existam NPCs no _tile_,
-deve ser apresentado um menu semelhante ao indicado na [Figura 2](#fig2).
+deve ser apresentado um menu semelhante ao indicado na [Figura 4](#fig4).
 
-<a name="fig2"></a>
+<a name="fig4"></a>
 
 ```
 Select NPC to attack
@@ -468,7 +484,7 @@ Select NPC to attack
 >
 ```
 
-**Figura 2** - Possível menu para seleção de NPC para atacar.
+**Figura 4** - Possível menu para seleção de NPC para atacar.
 
 #### Ecrã de apanhar/usar/deixar cair item (opções E, U e V)
 
@@ -481,9 +497,9 @@ jogador. Deve ser mostrada uma mensagem de erro quando uma destas opções é
 selecionada e não existem itens no inventário do jogador.
 
 Caso existam itens no inventário deve ser apresentado um menu semelhante ao
-indicado na [Figura 3](#fig3).
+indicado na [Figura 5](#fig5).
 
-<a name="fig3"></a>
+<a name="fig5"></a>
 
 ```
 Select item to XXXX
@@ -496,7 +512,7 @@ Select item to XXXX
 >
 ```
 
-**Figura 3** - Possível menu para seleção de item. `XXXX` deve ser substituído
+**Figura 5** - Possível menu para seleção de item. `XXXX` deve ser substituído
 por `pick up`, `use` ou `drop`, dependendo da opção escolhida.
 
 #### Ecrã de informação (opção I)
@@ -504,11 +520,11 @@ por `pick up`, `use` ou `drop`, dependendo da opção escolhida.
 Este ecrã aparece quando é selecionada a opção `I`, mostrando informação sobre
 os diferentes itens e armadilhas existentes no jogo. O jogador deve pressionar
 ENTER ou qualquer tecla para voltar ao ecrã principal, que deve ser redesenhado.
-O uso desta opção **não** gasta uma _turn_. A [Figura 4](#fig4) mostra um
+O uso desta opção **não** gasta uma _turn_. A [Figura 6](#fig6) mostra um
 possível ecrã de informação (os itens e armadilhas apresentadas são meramente
 exemplificativos).
 
-<a name="fig4"></a>
+<a name="fig6"></a>
 
 ```
 Food             HPIncrease      Weight
@@ -538,7 +554,7 @@ Bear Trap                -8
 Bottomless Chasm        -30
 ```
 
-**Figura 4** - Possível ecrã de informação (os itens e armadilhas apresentadas
+**Figura 6** - Possível ecrã de informação (os itens e armadilhas apresentadas
 são meramente exemplificativos).
 
 #### Ecrã de terminação do jogo (opção Q)
@@ -867,3 +883,4 @@ Este enunciado é disponibilizados através da licença [CC BY-NC-SA 4.0].
 [NextDouble()]:https://docs.microsoft.com/pt-pt/dotnet/api/system.random.nextdouble
 [Next()]:https://docs.microsoft.com/pt-pt/dotnet/api/system.random.next
 [função logística]:https://en.wikipedia.org/wiki/Logistic_function
+[função linear por troços]:https://en.wikipedia.org/wiki/Piecewise_linear_function
