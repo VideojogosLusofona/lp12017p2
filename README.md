@@ -8,6 +8,9 @@ You should have received a copy of the license along with this
 work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 -->
 
+[![Enunciado: CC BY-NC-SA 4.0](https://img.shields.io/badge/Enunciado-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![Código: MIT](https://img.shields.io/badge/Código-MIT-blue.svg)](http://opensource.org/licenses/MIT)
+
 # 2º Projeto de Linguagens de Programação I 2017/2018
 
 ## Descrição do problema
@@ -831,7 +834,8 @@ from https://en.wikipedia.org/wiki/Procedural_generation.
 
 ## Licenças
 
-Este enunciado é disponibilizados através da licença [CC BY-NC-SA 4.0].
+Este enunciado é disponibilizados através da licença [CC BY-NC-SA 4.0]. O código associado é disponibilizado através da licença
+[MIT](http://opensource.org/licenses/MIT).
 
 ## Metadados
 
