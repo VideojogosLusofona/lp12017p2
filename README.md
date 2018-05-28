@@ -35,8 +35,8 @@ dificultando a avaliação do jogo).
 
 ### Modo de funcionamento
 
-O jogo começa por apresentar o menu principal ao utilizador, que deve conter as
-seguintes opções:
+O jogo começa por apresentar o menu principal, que deve conter as seguintes
+opções:
 
 1. New game
 2. High scores
@@ -44,9 +44,11 @@ seguintes opções:
 4. Quit
 
 Caso o utilizador selecione as opções 2 ou 3, é mostrada a informação
-solicitada; o utilizador pressiona ENTER (ou qualquer tecla) para continuar,
-voltando ao menu principal. A opção 4 termina o programa. Se for selecionada a
+solicitada, após a qual o utilizador pressiona ENTER (ou qualquer tecla) para
+voltar ao menu principal. A opção 4 termina o programa. Se for selecionada a
 opção 1, começa um novo jogo.
+
+#### Ações disponíveis no jogo
 
 As ações disponíveis em cada _turn_ são as seguintes:
 
@@ -77,12 +79,12 @@ calculáveis a partir das restantes:
 
 * `HP` (_hit points_) - Vida do jogador, entre 0 e 100; quando chega a zero
   o jogador morre.
-* `SelectedWeapon` - A arma que o personagem usa em combate.
-* `Inventory` - Lista de itens que o personagem transporta, nomeadamente comida
-  e armas.
+* `SelectedWeapon` - A arma que o jogador usa em combate.
+* `Inventory` - Lista de itens que o jogador transporta, nomeadamente comida e
+  armas.
 * `MaxWeight` - Constante que define o peso máximo que o jogador pode carregar.
 * `Weight` - Peso total de tudo o que o jogador transporta, nomeadamente
-  itens no inventário (armas e comida) e a arma selecionada. Não pode
+  itens no inventário (armas e comida) e a arma equipada. Não pode
   ultrapassar `MaxWeight`.
 
 #### NPCs
@@ -99,9 +101,8 @@ Os NPCs têm as seguintes características:
   `AttackPower` de cada NPC é [aleatório](#procedural), mas nunca ultrapassando
   o valor 100.
 * `State` - Estado do NPC, um de dois estados possíveis:
-  * _Hostile_ - Ataca o jogador assim que o jogador se move para o respetivo
-    _tile_.
-  * _Neutral_ - NPC ignora o jogador quando o jogador se move para o respetivo
+  * _Hostile_ - Ataca o jogador assim que o jogador se move para o seu _tile_.
+  * _Neutral_ - NPC ignora o jogador quando o jogador se move para o seu
     _tile_. Caso o jogador ataque um NPC neste estado, o estado do NPC é
     alterado para _Hostile_.
 
@@ -118,15 +119,15 @@ Existem os seguintes itens em concreto:
   (`HPIncrease`), que não pode ultrapassar o valor 100, quando usado.
 * Armas - Podem existir diferentes tipos de armas, à escolha dos alunos. Cada
   tipo diferente de arma tem um `AttackPower` e `Durability` específicos. O
-  primeiro, valor entre 1 e 100, representa o máximo de HP que o jogador pode
-  retirar ao NPC quando o ataca. A `Durability`, valor entre 0 e 1, representa
-  a [probabilidade](#procedural) da arma não se estragar quando usada num
+  primeiro, entre 1 e 100, representa o máximo de HP que o jogador pode retirar
+  ao NPC quando o ataca. A `Durability`, entre 0 e 1, representa a
+  [probabilidade](#procedural) da arma não se estragar quando usada num
   ataque. As armas são retiradas do jogo no momento em que se estragam.
 
 Os itens podem existir em qualquer _tile_ do nível (exceto `EXIT!`) bem como
-no inventário do jogador (e no caso das armas, serem equipadas pelo jogador).
-Podem ainda ser largados pelos NPCs no _tile_ onde se encontram quando perdem
-um combate com o jogador.
+no inventário do jogador. No caso das armas, podem ainda ser equipadas pelo
+jogador. Os itens podem também ser deixados cair pelos NPCs no _tile_ onde se
+encontram após perderem um combate com o jogador.
 
 #### Mapas
 
@@ -138,7 +139,7 @@ reveladas.
 
 Um NPC `Hostile` ataca o jogador quando este entra ou se mantém no _tile_ onde
 o NPC está presente. A quantidade de HP que o jogador perde é igual a um valor
-[aleatório](#procedural) entre 0 e o `AttackPower` da arma equipada pelo NPC.
+[aleatório](#procedural) entre 0 e o `AttackPower` do NPC.
 
 O jogador pode atacar qualquer NPC presente no mesmo _tile_ selecionando a
 opção `F` e especificando qual o NPC a atacar. A quantidade de HP que o jogador
@@ -170,7 +171,7 @@ termina.
 As armadilhas têm as seguintes características:
 
 * `MaxDamage` - Valor máximo de HP que jogador pode perder se cair na armadilha.
-  Pode no máximo ter o valor 100.
+  É um valor entre 0 e 100.
 * `FallenInto` - Indica se o jogador já caiu na armadilha ou não.
 
 Podem existir diferentes tipos de armadilha no jogo, cada uma com um valor
@@ -187,7 +188,7 @@ já não causam estragos.
 
 O jogo pode terminar de duas formas:
 
-1. Quando o HP do jogador baixa até zero devido a cansaço (pois o jogador perde
+1. Quando o HP do jogador chega a zero devido a cansaço (pois o jogador perde
    1 HP por _turn_), devido a combate ou devido a armadilhas.
 2. Quando o jogador seleciona a opção `Q`.
 
@@ -201,32 +202,21 @@ figurar na tabela de _high scores_.
 concretamente, à medida que o jogo avança:
 
 * Relativamente aos NPCs:
-  * Devem tendencialmente existir em maior número, nunca ultrapassando um
-    número máximo definido pelos alunos.
-  * A proporção de _Hostiles_/_Neutral_ deve ir aumentando.
+  * Devem tendencialmente existir em maior número.
+  * A proporção _Hostiles_/_Neutral_ deve ir aumentando.
   * O `HP` e `AttackPower` devem ser cada vez maiores (mas nunca ultrapassando
     o máximo, 100).
-* Devem existir cada vez mais armadilhas (nunca ultrapassando o número máximo
-  definido pelos alunos).
-* Devem existir cada vez menos itens (comida e armas) disponíveis para o
-  jogador apanhar, mas sem nunca baixar de um número mínimo definido pelos
-  alunos.
+* Devem existir tendencialmente mais armadilhas.
+* Devem existir tendencialmente menos itens (comida e armas) disponíveis para o
+  jogador apanhar.
 
 Na secção [Geração procedimental e aleatoriedade](#procedural) são apresentadas
-algumas sugestões de como gerar infinitamente níveis com dificuldade cada vez
+algumas sugestões de como gerar infinitamente níveis de dificuldade cada vez
 maior.
 
 <a name="procedural"></a>
 
 ### Geração procedimental e aleatoriedade
-
-A [geração procedimental][GP] é uma peça fundamental na história dos Videojogos,
-tanto antigos como atuais. A [geração procedimental][GP] consiste na criação
-algorítmica e automática de dados, por oposição à criação manual dos mesmos. É
-usada nos Videojogos para criar grandes quantidades de conteúdo, promovendo a
-imprevisibilidade e a rejogabilidade dos jogos.
-
-#### Uso do gerador de números aleatórios do C# para geração procedimental
 
 <!--
 
@@ -249,14 +239,20 @@ Probablidade de arma se partir
 Itens deixados pelo NPC qd morre
 
 -->
+A [geração procedimental][GP] é uma peça fundamental na história dos Videojogos,
+tanto antigos como atuais. A [geração procedimental][GP] consiste na criação
+algorítmica e automática de dados, por oposição à criação manual dos mesmos. É
+usada nos Videojogos para criar grandes quantidades de conteúdo, promovendo a
+imprevisibilidade e a rejogabilidade dos jogos.
 
 O C# oferece a classe [Random][] para geração de números aleatórios, que por
-sua vez tem vários métodos úteis para o efeito. Para usarmos esta classe é
-primeiro necessário criar uma instância da mesma:
+sua vez tem vários métodos úteis. Para usarmos esta classe é primeiro
+necessário criar uma instância da mesma:
 
 ```cs
 // Criar uma instância de Random usando como semente a hora atual do sistema
-// Para efeitos de debugging pode ser conveniente usar uma semente fixa
+// Para efeitos de debugging durante o desenvolvimento do jogo pode ser
+// conveniente usar uma semente fixa
 Random rnd = new Random();
 ```
 
@@ -313,9 +309,9 @@ A classe [Random][] disponibiliza também três versões (_overloads_) do métod
 * `Next(int b)` - Retorna um inteiro aleatório no intervalo `[0, b[`.
 * `Next(int a, int b)` - Retorna um inteiro aleatório no intervalo `[a, b[`.
 
-Este método é apropriado para determinar a quantidade inicial de NPCs, itens e
-armadilhas, o número de itens deixados para trás por um NPC quando morre, bem
-como a posição inicial do jogador, da saída e do mapa.
+Estes métodos são apropriados para determinar a quantidade inicial de NPCs,
+itens e armadilhas, o número de itens deixados para trás por um NPC quando
+morre, bem como a posição inicial do jogador, da saída e do mapa.
 
 O seguinte código exemplifica uma possível forma de criar os NPCs para um novo
 nível (atenção que o código é meramente exemplificativo):
@@ -343,7 +339,7 @@ for (int i = 0; i < numberOfNPCs; i++)
     // Criar NPC
     NPC npc = new NPC(hp, attackPower, state);
 
-    // Adicionar NPC ao nível
+    // Adicionar NPC ao tile escolhido aleatoriamente
     level[row, col].Add(npc);
 }
 ```
@@ -351,16 +347,15 @@ for (int i = 0; i < numberOfNPCs; i++)
 O código anterior assume que as variáveis `maxNPCsForThisLevel`,
 `maxHPForThisLevel`, `maxAPForThisLevel` e `hostileProbabilityForThisLevel` já
 existem. Estas variáveis devem ir aumentando de valor à medida que o jogador
-vai passando os níveis, até um máximo pré-definido pelos alunos. A forma mais
-simples consiste em usar uma [função][funções] para relacionar a variável
-desejada (*y*) com o nível atual do jogo (*x*). Algumas funções apropriadas
-para o efeito são a [função linear][], a [função linear por troços][], a
-[função logística][] ou a [função logarítmica][]. No site disponibilizado
-através deste [link][funções], é possível manipular os diferentes parâmetros
-das várias funções de modo a visualizar como as mesmas podem relacionar o nível
-atual (*x*) com o valor de saída desejado (*y*). É também disponibilizada
-[aqui](ProcGenFunctions.cs) uma classe _static_ com as várias funções
-sugeridas.
+vai passando os níveis. A forma mais simples consiste em usar uma
+[função][funções] para relacionar a variável desejada (*y*) com o nível atual
+do jogo (*x*). Algumas funções apropriadas para o efeito são a
+[função linear][], a [função linear por troços][], a [função logística][] ou a
+[função logarítmica][]. No site disponibilizado através deste [link][funções],
+é possível manipular os diferentes parâmetros das várias funções de modo a
+visualizar como as mesmas podem relacionar o nível atual (*x*) com o valor de
+saída desejado (*y*). É também [disponibilizada uma classe _static_](ProcGenFunctions.cs)
+com as várias funções sugeridas.
 
 <a name="visualize"></a>
 
@@ -398,9 +393,9 @@ A [Figura 1](#fig1) mostra uma possível implementação da visualização do jo
 
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Player stats
 ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    ------------
-                                                   HP        - 34
+                                                   HP        - 34.4
 ☿.... ☢.... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Weapon    - Rusty Sword
-..... ..... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Inventory - 91% full
+..... ..... ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~ ~~~~~    Inventory - 91.7% full
 
 ..... ..... ..... ..... ..... ~~~~~ ~~~~~ ~~~~~
 ..... ..... ..... ..... ..... ~~~~~ ~~~~~ ~~~~~
@@ -465,11 +460,11 @@ Select NPC to attack
 >
 ```
 
-**Figura 2** - Possível menu para seleção de NPC para atacar.
+**Figura 2** - Possível menu para seleção de NPC a atacar.
 
 #### Ecrã de apanhar/usar/deixar cair item (opções E, U e V)
 
-A opção `E` pode ser utilizada quando existem NPCs no mesmo _tile_ do jogador.
+A opção `E` pode ser utilizada quando existem itens no mesmo _tile_ do jogador.
 Deve ser mostrada uma mensagem de erro quando a opção `E` é selecionada e não
 existem itens no _tile_ onde o jogador se encontra.
 
@@ -567,10 +562,10 @@ a [visualização](#visualize), são **obrigatórias** em todas as fases de
 implementação.
 
 Para fins de avaliação, a fase tida em conta é a anterior à fase mais baixa que
-ficou por implementar. Por exemplo, se o grupo implementar tudo até à fase 5,
-bem como as fases 7 e 9, a fase tida em conta para a avaliação é a fase 5. Ou
-seja, é vantajoso seguir a ordem sugerida para as fases de implementação e
-não "saltar" fases.
+ficou por implementar. Por exemplo, se o grupo implementar tudo até à fase 5
+(inclusive), bem como as fases 7 e 9, a fase tida em conta para avaliação é a
+fase 5. Ou seja, é vantajoso seguir a ordem sugerida para as fases de
+implementação e não "saltar" fases.
 
 #### Fase 1
 
@@ -634,8 +629,8 @@ indicados nas fases anteriores):
 * Implementação dos _high scores_ usando ficheiros:
   * Opção _High Scores_ do menu principal permite visualizar os 10 melhores
     _scores_.
-  * Quando jogador morre, _score_ é guardado caso esteja entre os 10 melhores
-    _high scores_.
+  * Quando jogador morre ou seleciona a opção `Q`, _score_ é guardado caso
+    esteja entre os 10 melhores.
 
 A implementação completa desta fase equivale a 75% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 3.75).
@@ -647,10 +642,9 @@ indicados nas fases anteriores):
 
 * Jogador tem inventário que permite guardar itens até um peso máximo
   pré-determinado.
-* Implementação das funcionalidades `(E) Pick up item`, `(U) Use item` e
-  `(V) Drop item` para comida e armas. Quando este tipo de itens (comida e
-  armas) são apanhados, são guardados no inventário do jogador, caso o mesmo
-  ainda suporte o peso.
+* Implementação das funcionalidades `(E) Pick up item` e `(V) Drop item` para
+  comida e armas. Quando este tipo de itens (comida e armas) são apanhados, são
+  guardados no inventário do jogador, caso o mesmo ainda suporte o peso.
 * Atualização da opção `(I) Information` de modo a mostrar informação acerca
   dos diferentes itens existentes no jogo.
 
@@ -662,9 +656,12 @@ A implementação completa desta fase equivale a 80% de cumprimento do
 Na fase 7 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-* O jogador pode equipar uma das armas que tem no seu inventário. A arma
-  equipada continua a contar para o peso total do inventário. A arma
-  anteriormente equipada é movida para o inventário.
+* Implementação da funcionalidade `(U) Use item`, nomeadamente:
+  * O jogador pode consumir itens de comida presentes no seu inventário, e o
+    seu `HP` deve aumentar de acordo com a comida consumida.
+  * O jogador pode equipar uma das armas que tem no seu inventário. A arma
+    equipada continua a contar para o peso total do inventário. A arma
+    anteriormente equipada é movida para o inventário.
 
 A implementação completa desta fase equivale a 85% de cumprimento do
 [objetivo **O1**](#objetivos) (nota máxima 4.25).
@@ -752,8 +749,11 @@ Este projeto tem os seguintes objetivos:
     * Arquitetura da solução, com breve explicação de como o programa foi
       organizado e indicação das estruturas de dados usadas (para o inventário
       e para a grelha de jogo, por exemplo), bem como os algoritmos
-      implementados (para desenhar o mapa, por exemplo).
-    * Um diagrama UML descrevendo a estrutura de classes.
+      implementados (para desenhar o mapa e para geração procedimental, por
+      exemplo).
+    * Um diagrama UML mostrando as relações entre as classes e tipos
+      desenvolvidos no jogo. Não é necessário indicar os conteúdos das classes
+      (variáveis, propriedades, métodos, etc).
     * Um fluxograma mostrando o _game loop_.
   * Conclusões e matéria aprendida.
   * Referências:
@@ -769,12 +769,12 @@ de forma qualitativa. Isto significa que todos os objetivos têm de ser
 parcialmente ou totalmente cumpridos. Ou seja, se os alunos ignorarem
 completamente um dos objetivos, a nota final será zero.
 
-A nota individual de cada aluno será atribuída com base na nota preliminar do
+A nota individual de cada aluno será atribuída com base na avaliação do
 projeto, na percentagem de trabalho realizada (indicada no relatório e
 verificada através dos _commits_) e na discussão do projeto. Se o aluno tiver
 realizado uma percentagem equitativa do projeto e se souber explicar o que fez
-durante a discussão, então a nota individual deverá ser muito semelhante à nota
-preliminar.
+durante a discussão, então a nota individual deverá ser muito semelhante à
+avaliação do projeto.
 
 ## Entrega
 
