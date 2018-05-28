@@ -120,7 +120,7 @@ Existem os seguintes itens em concreto:
   a [probabilidade](#procedural) da arma não se estragar quando usada num
   ataque. As armas são retiradas do jogo no momento em que se estragam.
 
-Os itens podem existir em qualquer _tile_ do nível (excepto `EXIT!`) bem como
+Os itens podem existir em qualquer _tile_ do nível (exceto `EXIT!`) bem como
 no inventário do jogador (e no caso das armas, serem equipadas pelo jogador).
 Podem ainda ser largados pelos NPCs no _tile_ onde se encontram quando perdem
 um combate com o jogador.
@@ -369,7 +369,7 @@ A visualização do jogo deve ser feita em modo de texto (consola).
 
 O ecrã principal do jogo deve mostrar o seguinte:
 
-* Mapa do jogo, distiguindo claramente a parte explorada da parte inexplorada.
+* Mapa do jogo, distinguindo claramente a parte explorada da parte inexplorada.
 * Estatísticas do jogador: nível atual, _hit points_ (HP), arma selecionada e
   percentagem de ocupação do inventário.
 * Em cada _tile_ do mapa explorado devem ser diferenciáveis os vários elementos
@@ -386,9 +386,9 @@ caracteres podem e devem ser usados para melhorar a visualização do jogo. Para
 o efeito deve ser incluída a instrução `Console.OutputEncoding = Encoding.UTF8;`
 no método `Main()` (é necessário usar o _namespace_ `System.Text`).
 
-A [Figura 3](#fig3) mostra uma possível implementação da visualização do jogo.
+A [Figura 1](#fig1) mostra uma possível implementação da visualização do jogo.
 
-<a name="fig3"></a>
+<a name="fig1"></a>
 
 ```
 +++++++++++++++++++++++++++ LP1 Rogue : Level 009 +++++++++++++++++++++++++++
@@ -439,16 +439,16 @@ Options
 >
 ```
 
-**Figura 3** - Possível implementação da visualização do jogo (ecrã principal).
+**Figura 1** - Possível implementação da visualização do jogo (ecrã principal).
 
 #### Ecrã de ataque (opção F)
 
 A opção `F` pode ser utilizada quando existem NPCs no mesmo _tile_ do jogador.
 Deve ser mostrada uma mensagem de erro quando a opção `F` é selecionada e não
 existem NPCs no _tile_ onde o jogador se encontra. Caso existam NPCs no _tile_,
-deve ser apresentado um menu semelhante ao indicado na [Figura 4](#fig4).
+deve ser apresentado um menu semelhante ao indicado na [Figura 2](#fig2).
 
-<a name="fig4"></a>
+<a name="fig2"></a>
 
 ```
 Select NPC to attack
@@ -462,7 +462,7 @@ Select NPC to attack
 >
 ```
 
-**Figura 4** - Possível menu para seleção de NPC para atacar.
+**Figura 2** - Possível menu para seleção de NPC para atacar.
 
 #### Ecrã de apanhar/usar/deixar cair item (opções E, U e V)
 
@@ -475,9 +475,9 @@ jogador. Deve ser mostrada uma mensagem de erro quando uma destas opções é
 selecionada e não existem itens no inventário do jogador.
 
 Caso existam itens no inventário deve ser apresentado um menu semelhante ao
-indicado na [Figura 5](#fig5).
+indicado na [Figura 3](#fig3).
 
-<a name="fig5"></a>
+<a name="fig3"></a>
 
 ```
 Select item to XXXX
@@ -490,7 +490,7 @@ Select item to XXXX
 >
 ```
 
-**Figura 5** - Possível menu para seleção de item. `XXXX` deve ser substituído
+**Figura 3** - Possível menu para seleção de item. `XXXX` deve ser substituído
 por `pick up`, `use` ou `drop`, dependendo da opção escolhida.
 
 #### Ecrã de informação (opção I)
@@ -498,11 +498,11 @@ por `pick up`, `use` ou `drop`, dependendo da opção escolhida.
 Este ecrã aparece quando é selecionada a opção `I`, mostrando informação sobre
 os diferentes itens e armadilhas existentes no jogo. O jogador deve pressionar
 ENTER ou qualquer tecla para voltar ao ecrã principal, que deve ser redesenhado.
-O uso desta opção **não** gasta uma _turn_. A [Figura 6](#fig6) mostra um
+O uso desta opção **não** gasta uma _turn_. A [Figura 4](#fig4) mostra um
 possível ecrã de informação (os itens e armadilhas apresentadas são meramente
 exemplificativos).
 
-<a name="fig6"></a>
+<a name="fig4"></a>
 
 ```
 Food             HPIncrease      Weight
@@ -532,7 +532,7 @@ Bear Trap                -8
 Bottomless Chasm        -30
 ```
 
-**Figura 6** - Possível ecrã de informação (os itens e armadilhas apresentadas
+**Figura 4** - Possível ecrã de informação (os itens e armadilhas apresentadas
 são meramente exemplificativos).
 
 #### Ecrã de terminação do jogo (opção Q)
@@ -565,8 +565,8 @@ implementação.
 
 Para fins de avaliação, a fase tida em conta é a anterior à fase mais baixa que
 ficou por implementar. Por exemplo, se o grupo implementar tudo até à fase 5,
-bem como as as fases 7 e 9, a fase tida em conta para a avaliação é a fase 5.
-Ou seja, é vantajoso seguir a ordem sugerida para as fases de implementação e
+bem como as fases 7 e 9, a fase tida em conta para a avaliação é a fase 5. Ou
+seja, é vantajoso seguir a ordem sugerida para as fases de implementação e
 não "saltar" fases.
 
 #### Fase 1
@@ -720,8 +720,8 @@ Este projeto tem os seguintes objetivos:
 * **O1** - Jogo deve funcionar como especificado (ver [fases](#fases) de
   implementação, obrigatório implementar pelo menos a Fase 1).
 * **O2** - Projeto e código bem organizados, nomeadamente: a) estrutura de
-  classes bem pensada (ver secção <a href="#orgclasses">Organização do projeto
-  e estrutura de classes</a>); b) código devidamente comentado e indentado; c)
+  classes bem pensada (ver secção [Organização do projeto e estrutura de
+  classes](#orgclasses)); b) código devidamente comentado e indentado; c)
   inexistência de código "morto", que não faz nada, como por exemplo
   variáveis ou métodos nunca usados; d) soluções [simples][KISS] e eficientes;
   e, e) projeto compila e executa sem erros e/ou  _warnings_.
@@ -766,7 +766,7 @@ de forma qualitativa. Isto significa que todos os objetivos têm de ser
 parcialmente ou totalmente cumpridos. Ou seja, se os alunos ignorarem
 completamente um dos objetivos, a nota final será zero.
 
-A nota individual de cada aluno será atribuida com base na nota preliminar do
+A nota individual de cada aluno será atribuída com base na nota preliminar do
 projeto, na percentagem de trabalho realizada (indicada no relatório e
 verificada através dos _commits_) e na discussão do projeto. Se o aluno tiver
 realizado uma percentagem equitativa do projeto e se souber explicar o que fez
@@ -797,29 +797,27 @@ Notas adicionais para entrega:
 ## Honestidade académica
 
 Nesta disciplina, espera-se que cada aluno siga os mais altos padrões de
-honestidade académica. Isto significa que cada ideia que não seja do
-aluno deve ser claramente indicada, com devida referência ao respectivo
-autor. O não cumprimento desta regra constitui plágio.
+honestidade académica. Isto significa que cada ideia que não seja do aluno deve
+ser claramente indicada, com devida referência ao respetivo autor. O não
+cumprimento desta regra constitui plágio.
 
-O plágio inclui a utilização de ideias, código ou conjuntos de soluções
-de outros alunos ou indivíduos, ou quaisquer outras fontes para além
-dos textos de apoio à disciplina, sem dar o respectivo crédito a essas
-fontes. Os alunos são encorajados a discutir os problemas com outros
-alunos e devem mencionar essa discussão quando submetem os projetos.
-Essa menção **não** influenciará a nota. Os alunos não deverão, no
-entanto, copiar códigos, documentação e relatórios de outros alunos, ou dar os
-seus próprios códigos, documentação e relatórios a outros em qualquer
-circunstância. De facto, não devem sequer deixar códigos, documentação e
-relatórios em computadores de uso partilhado.
+O plágio inclui a utilização de ideias, código ou conjuntos de soluções de
+outros alunos ou indivíduos, ou quaisquer outras fontes para além dos textos de
+apoio à disciplina, sem dar o respetivo crédito a essas fontes. Os alunos são
+encorajados a discutir os problemas com outros alunos e devem mencionar essa
+discussão quando submetem os projetos. Essa menção **não** influenciará a nota.
+Os alunos não deverão, no entanto, copiar códigos, documentação e relatórios de
+outros alunos, ou dar os seus próprios códigos, documentação e relatórios a
+outros em qualquer circunstância. De facto, não devem sequer deixar códigos,
+documentação e relatórios em computadores de uso partilhado.
 
-Nesta disciplina, a desonestidade académica é considerada fraude, com
-todas as consequências legais que daí advêm. Qualquer fraude terá como
-consequência imediata a anulação dos projetos de todos os alunos envolvidos
-(incluindo os que possibilitaram a ocorrência). Qualquer suspeita de
-desonestidade académica será relatada aos órgãos superiores da escola
-para possível instauração de um processo disciplinar. Este poderá
-resultar em reprovação à disciplina, reprovação de ano ou mesmo suspensão
-temporária ou definitiva da ULHT.
+Nesta disciplina, a desonestidade académica é considerada fraude, com todas as
+consequências legais que daí advêm. Qualquer fraude terá como consequência
+imediata a anulação dos projetos de todos os alunos envolvidos (incluindo os
+que possibilitaram a ocorrência). Qualquer suspeita de desonestidade académica
+será relatada aos órgãos superiores da escola para possível instauração de um
+processo disciplinar. Este poderá resultar em reprovação à disciplina,
+reprovação de ano ou mesmo suspensão temporária ou definitiva da ULHT.
 
 _Texto adaptado da disciplina de [Algoritmos e
 Estruturas de Dados][aed] do [Instituto Superior Técnico][ist]_
