@@ -203,7 +203,7 @@ concretamente, à medida que o jogo avança:
 
 * Relativamente aos NPCs:
   * Devem tendencialmente existir em maior número.
-  * A proporção _Hostiles_/_Neutral_ deve ir aumentando.
+  * A proporção _Hostiles_/_Neutrals_ deve ir aumentando.
   * O `HP` e `AttackPower` devem ser cada vez maiores (mas nunca ultrapassando
     o máximo, 100).
 * Devem existir tendencialmente mais armadilhas.
@@ -283,7 +283,7 @@ if (rnd.NextDouble() < 1 - weapon.Durability)
 
 O HP a ser subtraído devido a ataque ou armadilhas também pode ser determinado
 com o método [NextDouble()][], multiplicando o valor retornado pelo possível
-máximo em questão. Por exemplo::
+máximo em questão. Por exemplo:
 
 ```cs
 // Valor de HP a subtrair num ataque, será no máximo igual a AttackPower
@@ -297,10 +297,10 @@ double damage = Random.NextDouble() * trap.MaxDamage;
 
 O método [NextDouble()][] pode ainda ser usado para determinar o `HP` inicial,
 o `AttackPower` e o `State` dos NPCs. No caso das duas primeiras
-características, basta multiplicar o valor de retorno de [NextDouble()][] por
-100, pois ambas as propriedades podem variar entre 0 e 100. No caso do `State`,
-que pode ter apenas dois valores discretos, usamos um cálculo de probabilidade
-como fizemos no exemplo "cara ou coroa".
+características, basta multiplicar o valor de retorno de [NextDouble()][] pelo
+máximo desejado (nunca superior a 100). No caso do `State`, que pode ter apenas
+dois valores discretos, usamos um cálculo de probabilidade como fizemos no
+exemplo "cara ou coroa".
 
 A classe [Random][] disponibiliza também três versões (_overloads_) do método
 [Next()][], úteis para obter números inteiros aleatórios:
@@ -612,9 +612,9 @@ A implementação completa desta fase equivale a 65% de cumprimento do
 Na fase 4 devem ser implementados os seguintes pontos (além dos pontos
 indicados nas fases anteriores):
 
-* Implementação de armadilhas: quando o jogador se move para um _tile_ que
-  contém uma armadilha, perde HP entre 0 e o valor de `MaxDamage` da armadilha
-  em questão.
+* Implementação de armadilhas: quando o jogador se move pela primeira vez para
+  um _tile_ que contém uma armadilha, perde HP entre 0 e o valor de `MaxDamage`
+  da armadilha em questão.
 * Implementação da opção `(I) Information`, que apresenta informação acerca dos
   diferentes tipos de armadilha no jogo.
 
@@ -658,7 +658,8 @@ indicados nas fases anteriores):
 
 * Implementação da funcionalidade `(U) Use item`, nomeadamente:
   * O jogador pode consumir itens de comida presentes no seu inventário, e o
-    seu `HP` deve aumentar de acordo com a comida consumida.
+    seu `HP` deve aumentar de acordo com a comida consumida, até ao máximo de
+    100.
   * O jogador pode equipar uma das armas que tem no seu inventário. A arma
     equipada continua a contar para o peso total do inventário. A arma
     anteriormente equipada é movida para o inventário.
