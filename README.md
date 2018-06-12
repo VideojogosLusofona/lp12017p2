@@ -15,12 +15,13 @@ work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 ## Descrição do problema
 
-Os alunos devem implementar um jogo _roguelike_ em C# com níveis
-[gerados procedimentalmente](#procedural) em grelhas 8x8. O jogador começa no
-lado esquerdo da grelha (1ª coluna), e o seu objetivo é encontrar a saída do
-nível, que se encontra do lado direito dessa mesma grelha (8ª coluna). Pelo
-meio o jogador pode encontrar NPCs (agressivos ou neutros), encontrar itens
-(comida, armas, mapas), possivelmente apanhando-os, e cair em armadilhas.
+Os alunos devem implementar, em grupos de 2 a 3 elementos, um jogo _roguelike_
+em C# com níveis [gerados procedimentalmente](#procedural) em grelhas 8x8. O
+jogador começa no lado esquerdo da grelha (1ª coluna), e o seu objetivo é
+encontrar a saída do nível, que se encontra do lado direito dessa mesma grelha
+(8ª coluna). Pelo meio o jogador pode encontrar NPCs (agressivos ou neutros),
+encontrar itens (comida, armas, mapas), possivelmente apanhando-os, e cair em
+armadilhas.
 
 Os níveis vão ficando progressivamente mais difíceis, com mais monstros, mais
 armadilhas e menos itens. O _score_ final do jogador é igual ao nível atingido,
@@ -790,6 +791,7 @@ Deve ser submetido um ficheiro `zip` com os seguintes conteúdos:
 
 Notas adicionais para entrega:
 
+* Os grupos podem ter entre 2 a 3 elementos.
 * A solução deve ser entregue na forma de uma solução para Visual Studio 2017.
 * O projeto deve ser do tipo Console App (.NET Framework ou .NET Core).
 * Todos os ficheiros do projeto devem ser gravados em codificação [UTF-8]. Este
